@@ -67,7 +67,7 @@ export default function RegisterPage() {
                 md={7}
                 lg={8}
                 sx={{
-                    backgroundImage: 'url(/bg.png)',
+                    backgroundImage: 'url(../../../src/assets/bg.png)',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -83,7 +83,7 @@ export default function RegisterPage() {
                         alignItems: 'center',
                     }}
                 >
-                    <Avatar alt="BuyBook" src="/buybook.png" sx={{ m: 1, width: 100, height: 100 }} variant="square" />
+                    <Avatar alt="BuyBook" src="../../../src/assets/buybook.png" sx={{ m: 1, width: 100, height: 100 }} variant="square" />
                     <Typography variant="h5">
 
                         Sign Up
