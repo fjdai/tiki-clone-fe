@@ -4,7 +4,6 @@ import App from './App.jsx'
 import { Provider } from 'react-redux';
 import { store } from "./redux/store.jsx"
 import CssBaseline from '@mui/material/CssBaseline';
-import "./_main.scss"
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const mode = (mode) => ({
