@@ -8,6 +8,16 @@ import Header from "./components/Header/index.jsx";
 import Footer from "./components/Footer/index.jsx";
 import Home from "./components/Home/index.jsx";
 import RegisterPage from "./pages/register/index.jsx";
+import { useEffect } from "react";
+import { fetchAccount } from "./services/apiAuth.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { doGetAccountAction } from "./redux/account/accountSlice.jsx";
+import NotFound from "./components/NotFound/index.jsx";
+import Loading from "./components/Loading/index.jsx";
+import ContactPage from "./pages/contact/index.jsx";
+import BookPage from "./pages/book/index.jsx";
+import AdminPage from "./pages/admin/index.jsx";
+import ProtectedRoute from "./components/ProtectedRoute/index.jsx";
 
 const Layout = () => {
   return (
@@ -21,16 +31,63 @@ const Layout = () => {
 
 
 export default function App() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(state => { state.account.isLoading });
+
+  const getAccount = async () => {
+    if (window.location.pathname === "/login"
+      || window.location.pathname === "/register") {
+      return;
+    }
+
+    const res = await fetchAccount();
+    if (res?.data) {
+      dispatch(doGetAccountAction(res.data))
+    }
+  }
+  useEffect(() => {
+    getAccount()
+  }, [])
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Layout />,
-      errorElement: <div>404 Not Found</div>,
+      errorElement: <NotFound />,
       children: [
         {
           index: true,
           element: <Home />,
+        },
+        {
+          path: "contact",
+          element: <ContactPage />,
+        },
+        {
+          path: "book",
+          element: <BookPage />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <Layout />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          index: true,
+          element:
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+        },
+        {
+          path: "user",
+          element: <ContactPage />,
+        },
+        {
+          path: "book",
+          element: <BookPage />,
         },
       ],
     },
@@ -46,7 +103,15 @@ export default function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      {isLoading === false
+        || window.location.pathname === '/login'
+        || window.location.pathname === '/register'
+        || window.location.pathname === '/'
+        ?
+        <RouterProvider router={router} />
+        :
+        <Loading />
+      }
     </>
   )
 }

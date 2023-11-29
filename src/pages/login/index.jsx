@@ -15,21 +15,25 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { postLogin } from '../../services/apiAuth';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch } from 'react-redux';
+import { doLoginAction } from '../../redux/account/accountSlice';
 
 
 export default function LoginPage() {
     window.history.replaceState({}, document.title)
-
     const [user, setUser] = useState({
         username: "",
         password: "",
     })
-    const location = useLocation();
-    const navigate = useNavigate();
     const [toast, setToast] = useState({
         open: false,
         type: "success"
     });
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -38,7 +42,9 @@ export default function LoginPage() {
         setIsLoading(true);
         const res = await postLogin(user.username, user.password);
         setIsLoading(false);
-        if (res && res.data) {
+        if (res?.data) {
+            localStorage.setItem("access_token", res.data.access_token);
+            dispatch(doLoginAction(res.data.user))
             navigate("/")
         } else {
             setToast({ ...toast, open: true, type: "error", message: [res.message] });
@@ -127,7 +133,7 @@ export default function LoginPage() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                {!isLoading ? "Sign In" : <><CircularProgress sx={{ ml: -2.5, mr: 0.5 }} size="1rem" color="inherit" />Sign Ip</>}
+                                {!isLoading ? "Sign In" : <><CircularProgress sx={{ ml: -2.5, mr: 0.5 }} size="1rem" color="inherit" />Sign In</>}
 
                             </Button>
                             <Grid container>
