@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     isAuthenticated: false,
     isLoading: true,
-    "user": {
+    user: {
         "email": "",
         "phone": "",
         "fullName": "",
@@ -20,12 +20,12 @@ export const accountSlide = createSlice({
         doLoginAction: (state, action) => {
             state.isAuthenticated = true;
             state.isLoading = false;
-            state.user = action.payload;
+            state.user = action.payload.user;
         },
         doGetAccountAction: (state, action) => {
             state.isAuthenticated = true;
             state.isLoading = false;
-            state.user = action.payload;
+            state.user = action.payload.user;
         },
     }
 })

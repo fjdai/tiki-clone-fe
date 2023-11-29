@@ -9,7 +9,7 @@ import Footer from "./components/Footer/index.jsx";
 import Home from "./components/Home/index.jsx";
 import RegisterPage from "./pages/register/index.jsx";
 import { useEffect } from "react";
-import { fetchAccount } from "./services/apiAuth.jsx";
+import { callFetchAccount } from "./services/apiAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { doGetAccountAction } from "./redux/account/accountSlice.jsx";
 import NotFound from "./components/NotFound/index.jsx";
@@ -18,6 +18,7 @@ import ContactPage from "./pages/contact/index.jsx";
 import BookPage from "./pages/book/index.jsx";
 import AdminPage from "./pages/admin/index.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/index.jsx";
+import LayoutAdmin from "./components/Admin/LayoutAdmin.jsx";
 
 const Layout = () => {
   return (
@@ -32,19 +33,22 @@ const Layout = () => {
 
 export default function App() {
   const dispatch = useDispatch();
-  const isLoading = useSelector(state => { state.account.isLoading });
+  const isLoading = useSelector(state => state.account.isLoading);
 
   const getAccount = async () => {
-    if (window.location.pathname === "/login"
-      || window.location.pathname === "/register") {
+    if (
+      window.location.pathname === "/login"
+      || window.location.pathname === "/register"
+    )
       return;
-    }
 
-    const res = await fetchAccount();
-    if (res?.data) {
+
+    const res = await callFetchAccount();
+    if (res && res.data) {
       dispatch(doGetAccountAction(res.data))
     }
   }
+
   useEffect(() => {
     getAccount()
   }, [])
@@ -69,9 +73,10 @@ export default function App() {
         },
       ],
     },
+
     {
       path: "/admin",
-      element: <Layout />,
+      element: <LayoutAdmin />,
       errorElement: <NotFound />,
       children: [
         {
@@ -92,25 +97,26 @@ export default function App() {
       ],
     },
     {
-      path: "login",
+      path: "/login",
       element: <LoginPage />,
     },
     {
-      path: "register",
+      path: "/register",
       element: <RegisterPage />,
     },
   ]);
 
   return (
     <>
-      {isLoading === false
-        || window.location.pathname === '/login'
-        || window.location.pathname === '/register'
-        || window.location.pathname === '/'
-        ?
-        <RouterProvider router={router} />
-        :
-        <Loading />
+      {
+        isLoading === false
+          || window.location.pathname === '/login'
+          || window.location.pathname === '/register'
+          || window.location.pathname === '/'
+          ?
+          <RouterProvider router={router} />
+          :
+          <Loading />
       }
     </>
   )

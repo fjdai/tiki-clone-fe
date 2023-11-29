@@ -13,7 +13,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { postLogin } from '../../services/apiAuth';
+import { callLogin } from '../../services/apiAuth';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch } from 'react-redux';
 import { doLoginAction } from '../../redux/account/accountSlice';
@@ -40,7 +40,7 @@ export default function LoginPage() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        const res = await postLogin(user.username, user.password);
+        const res = await callLogin(user.username, user.password);
         setIsLoading(false);
         if (res?.data) {
             localStorage.setItem("access_token", res.data.access_token);
@@ -103,8 +103,9 @@ export default function LoginPage() {
                                 autoFocus
                                 fullWidth
                                 value={user.username}
-                                onChange={handleOnChange}
+                                onChange={(event) => { handleOnChange(event) }}
                                 label="Email Address"
+                                autoComplete='off'
                                 name="username"
                                 type='text'
                             />
@@ -113,9 +114,10 @@ export default function LoginPage() {
                                 required
                                 fullWidth
                                 value={user.password}
-                                onChange={handleOnChange}
+                                onChange={(event) => { handleOnChange(event) }}
                                 name="password"
                                 label="Password"
+                                autoComplete='off'
                                 type={showPassword ? "text" : "password"}
                                 InputProps={{
                                     endAdornment: (

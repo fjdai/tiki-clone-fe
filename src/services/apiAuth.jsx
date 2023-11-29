@@ -1,15 +1,13 @@
 import axios from "../utils/axiosCustomize";
 
-const postRegister = (fullName, email, password, phone) => {
+export const callRegister = (fullName, email, password, phone) => {
     return axios.post("/api/v1/user/register", { fullName, email, password, phone });
 }
 
-const postLogin = (username, password) => {
+export const callLogin = (username, password) => {
     return axios.post("/api/v1/auth/login", { username, password })
 }
 
-const fetchAccount = () => {
+export const callFetchAccount = () => {
     return axios.get("/api/v1/auth/account");
 }
-
-export { postRegister, postLogin, fetchAccount } 

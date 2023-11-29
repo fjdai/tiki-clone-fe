@@ -11,7 +11,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import { postRegister } from '../../services/apiAuth';
+import { callRegister } from '../../services/apiAuth';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
@@ -40,7 +40,7 @@ export default function RegisterPage() {
     const handleOnSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        const res = await postRegister(user.fullname, user.email, user.password, user.phone);
+        const res = await callRegister(user.fullname, user.email, user.password, user.phone);
         setIsLoading(false);
         if (res?.data?._id) {
             navigate("/login", { state: { ...toast, open: true, type: "success" } })
@@ -55,7 +55,6 @@ export default function RegisterPage() {
             [event.target.name]: event.target.value
         });
     }
-
     return (
         <>
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -95,6 +94,7 @@ export default function RegisterPage() {
                                 fullWidth
                                 onChange={(event) => handleOnChange(event)}
                                 label="Full Name"
+                                autoComplete='off'
                                 value={user.fullname}
                                 name="fullname"
                                 type='text'
@@ -104,7 +104,7 @@ export default function RegisterPage() {
                                 required
                                 fullWidth
                                 value={user.email}
-                                autoComplete='username'
+                                autoComplete='off'
                                 label="Email Address"
                                 onChange={(event) => handleOnChange(event)}
                                 name="email"
@@ -136,6 +136,7 @@ export default function RegisterPage() {
                                 fullWidth
                                 label="Phone Number"
                                 name="phone"
+                                autoComplete='off'
                                 value={user.phone}
                                 onChange={(event) => handleOnChange(event)}
                                 type="text"
@@ -150,11 +151,6 @@ export default function RegisterPage() {
                                 {!isLoading ? "Sign Up" : <><CircularProgress sx={{ ml: -2.5, mr: 0.5 }} size="1rem" color="inherit" />Sign Up</>}
                             </Button>
                             <Grid container>
-                                {/* <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid> */}
                                 <Grid item xs={12} sx={{
                                     justifyContent: "center",
                                     display: "flex"
