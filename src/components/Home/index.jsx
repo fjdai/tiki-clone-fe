@@ -1,7 +1,11 @@
+import Box from "@mui/material/Box";
+
 const Home = () => {
     return (
         <>
-            home
+            <Box sx={{ height: "100vh", flexGrow: 1, p: 3 }}>
+                home
+            </Box>
         </>
     )
 }

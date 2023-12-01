@@ -1,0 +1,14 @@
+.manage-users-container {
+    // & :hover .manage-users {
+    //     background-color: rgba(0, 0, 0, 0.04);
+    // }
+    .manage-users {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .css-1betqn-MuiAccordionSummary-content {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+    }
+}

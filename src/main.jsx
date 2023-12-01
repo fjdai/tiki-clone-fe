@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { store } from "./redux/store.jsx"
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import "./styles/main.scss"
 
 const mode = (mode) => ({
   palette: {
