@@ -27,6 +27,11 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import "./LayoutAdmin.scss"
+import { useDispatch, useSelector } from 'react-redux';
+import { callLogout } from '../../services/apiAuth';
+import { doLogoutAction } from '../../redux/account/accountSlice';
+
+const drawerWidth = 240;
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -55,7 +60,6 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(0),
 }));
 
-const drawerWidth = 240;
 
 
 const openedMixin = (theme) => ({
@@ -124,10 +128,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const LayoutAdmin = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
+  const role = useSelector(state => state.account.user.role);
+  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -137,11 +144,6 @@ const LayoutAdmin = () => {
     setOpen(false);
   };
 
-
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const isMenuOpen = Boolean(anchorEl);
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -149,6 +151,15 @@ const LayoutAdmin = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogOut = async () => {
+    let res = await callLogout();
+    if (res && res.data) {
+      dispatch(doLogoutAction());
+      setAnchorEl(null);
+      navigate("/", { state: "logout" });
+    }
+  }
 
   const renderMenu = (
     <Menu
@@ -158,7 +169,6 @@ const LayoutAdmin = () => {
         vertical: 'top',
         horizontal: 'right',
       }}
-      // id={menuId}
       keepMounted
       transformOrigin={{
         vertical: 'top',
@@ -168,220 +178,232 @@ const LayoutAdmin = () => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={() => alert("me")}>Manage User</MenuItem>
-      <MenuItem onClick={() => alert("me")}>Log Out</MenuItem>
+      <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
 
   const [expanded, setExpanded] = useState(false);
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h5" noWrap component="div">
-            BuyBook
-          </Typography>
-          <Box sx={{ flexGrow: 1 }} />
-          <IconButton
-            size="large"
-            edge="end"
-            onClick={handleProfileMenuOpen}
-            color="inherit"
-          >
-            <Avatar />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      {renderMenu}
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-          <Typography variant='h5' sx={{ ml: 5 }}>Admin</Typography>
-        </DrawerHeader>
-        <List>
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-              onClick={() => navigate("/admin")}
-            >
-              <ListItemIcon
+  return (<>
+
+    {
+      role === "USER" ?
+        <>
+          <Outlet />
+        </>
+        :
+        <Box sx={{ display: 'flex' }}>
+          <AppBar position="fixed" open={open}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                onClick={handleDrawerOpen}
+                edge="start"
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
                 }}
               >
-                <SpaceDashboardOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} > DashBoard</ListItemText>
-            </ListItemButton>
-          </ListItem>
-          {open ?
-            <ListItem className='manage-users-container' disablePadding sx={{ display: 'block' }}>
-              <Accordion expanded={expanded}>
-                <ListItemButton className='manage-users'
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h5" noWrap component="div">
+                BuyBook
+              </Typography>
+              <Box sx={{ flexGrow: 1 }} />
+              <IconButton
+                size="large"
+                edge="end"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <Avatar />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          {renderMenu}
+          <Drawer variant="permanent" open={open}>
+            <DrawerHeader>
+              <IconButton onClick={handleDrawerClose}>
+                <ChevronLeftIcon />
+              </IconButton>
+              <Typography variant='h5' sx={{ ml: 5 }}>Admin</Typography>
+            </DrawerHeader>
+            <List>
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
                   }}
-                  onClick={() => { setExpanded(!expanded) }}
+                  onClick={() => navigate("/admin")}
                 >
-                  <AccordionSummary sx={{ p: 0 }} >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: 3,
-                        justifyContent: 'center',
-                        alignItems: "center",
-                      }}
-                    >
-                      <PersonOutlineOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText >
-                      Manage Users
-                    </ListItemText>
-                  </AccordionSummary>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <SpaceDashboardOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText sx={{ opacity: open ? 1 : 0 }} > DashBoard</ListItemText>
                 </ListItemButton>
-                <AccordionDetails>
-                  <List>
-                    <ListItem disablePadding >
-                      <ListItemButton
-                        sx={{
-                          minHeight: 10,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => navigate("/admin/user")}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: 3,
-                            ml: 3,
-                            justifyContent: 'start',
-                          }}
-                        >
-                          <PeopleAltOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText>CURD</ListItemText>
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding >
-                      <ListItemButton
-                        sx={{
-                          minHeight: 10,
-                          justifyContent: 'initial',
-                          px: 2.5,
-                        }}
-                        onClick={() => navigate("/admin/user")}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: 3,
-                            ml: 3,
+              </ListItem>
+              {open ?
+                <ListItem className='manage-users-container' disablePadding sx={{ display: 'block' }}>
+                  <Accordion expanded={expanded}>
+                    <ListItemButton className='manage-users'
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
+                      }}
+                      onClick={() => { setExpanded(!expanded) }}
 
-                            justifyContent: 'start',
+                    >
+                      <AccordionSummary sx={{ p: 0 }} >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: 3,
+                            justifyContent: 'center',
+                            alignItems: "center",
                           }}
                         >
-                          <PeopleAltOutlinedIcon />
+                          <PersonOutlineOutlinedIcon />
                         </ListItemIcon>
-                        <ListItemText>CURD</ListItemText>
-                      </ListItemButton>
-                    </ListItem>
-                  </List>
-                </AccordionDetails>
-              </Accordion>
-            </ListItem>
-            :
-            <>
+                        <ListItemText >
+                          Manage Users
+                        </ListItemText>
+                      </AccordionSummary>
+                    </ListItemButton>
+                    <AccordionDetails>
+                      <List>
+                        <ListItem disablePadding >
+                          <ListItemButton
+                            sx={{
+                              minHeight: 10,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                            }}
+                            onClick={() => navigate("/admin/user")}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: 3,
+                                ml: 3,
+                                justifyContent: 'start',
+                              }}
+                            >
+                              <PeopleAltOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText>CURD</ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding >
+                          <ListItemButton
+                            sx={{
+                              minHeight: 10,
+                              justifyContent: 'initial',
+                              px: 2.5,
+                            }}
+                            onClick={() => navigate("/admin/user")}
+                          >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: 3,
+                                ml: 3,
+
+                                justifyContent: 'start',
+                              }}
+                            >
+                              <PeopleAltOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText>CURD</ListItemText>
+                          </ListItemButton>
+                        </ListItem>
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
+                </ListItem>
+                :
+                <>
+                  <ListItem disablePadding sx={{ display: 'block' }}>
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: 'center',
+                        px: 2.5,
+                      }}
+                      onClick={() => { navigate("/admin/user") }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <PersonOutlineOutlinedIcon />
+                      </ListItemIcon>
+                      <ListItemText sx={{ opacity: open ? 1 : 0 }} > Manage Users</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                </>
+              }
               <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
-                    justifyContent: 'center',
+                    justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
                   }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
+                      mr: open ? 3 : 'auto',
                       justifyContent: 'center',
                     }}
                   >
-                    <PersonOutlineOutlinedIcon />
+                    <LibraryBooksOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText sx={{ opacity: open ? 1 : 0 }} > Manage Books</ListItemText>
                 </ListItemButton>
               </ListItem>
-            </>
-          }
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <LibraryBooksOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} > Manage Books</ListItemText>
-            </ListItemButton>
-          </ListItem>
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <PaidOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText sx={{ opacity: open ? 1 : 0 }} > Manage Orders</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        </List>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Outlet />
-      </Box>
-    </Box >
-  );
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <PaidOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText sx={{ opacity: open ? 1 : 0 }} > Manage Orders</ListItemText>
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Drawer>
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <DrawerHeader />
+            <Outlet />
+          </Box>
+        </Box >
+    }
+  </>
+  )
+
 }
 
 export default LayoutAdmin;

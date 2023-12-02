@@ -27,9 +27,22 @@ export const accountSlide = createSlice({
             state.isLoading = false;
             state.user = action.payload.user;
         },
-    }
+        doLogoutAction: (state, action) => {
+            localStorage.removeItem("access_token");
+            state.isAuthenticated = false;
+            state.user = {
+                "email": "",
+                "phone": "",
+                "fullName": "",
+                "role": "",
+                "avatar": "",
+                "id": ""
+            };
+        }
+    },
+
 })
 
-export const { doLoginAction, doGetAccountAction } = accountSlide.actions
+export const { doLoginAction, doGetAccountAction, doLogoutAction } = accountSlide.actions
 
 export default accountSlide.reducer

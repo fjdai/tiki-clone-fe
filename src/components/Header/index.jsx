@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled, alpha, useTheme } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,13 +15,18 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
+import { callLogout } from '../../services/apiAuth';
+import { doLogoutAction } from '../../redux/account/accountSlice';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 
 const drawerWidth = 240;
 
@@ -92,16 +97,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const Header = () => {
+    window.history.replaceState({}, document.title)
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
-    const avt = useSelector(state => state.account.user.avatar);
+    const avt = useSelector(state => state.account.user?.avatar);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [toast, setToast] = useState(false);
+    const [message, setMessage] = useState("logout");
 
     const isMenuOpen = Boolean(anchorEl);
-
-    const navigate = useNavigate();
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -110,6 +119,17 @@ const Header = () => {
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const handleLogout = async () => {
+        let res = await callLogout();
+        if (res && res.data) {
+            dispatch(doLogoutAction());
+            setAnchorEl(null);
+            setMessage("logout")
+            setToast(true);
+            navigate("/");
+        }
+    }
 
 
     const renderMenu = (
@@ -130,11 +150,16 @@ const Header = () => {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={() => alert("me")}>Manage User</MenuItem>
-            <MenuItem onClick={() => alert("me")}>Log Out</MenuItem>
+            <MenuItem onClick={handleLogout}>Log Out</MenuItem>
         </Menu>
     );
 
-    const theme = useTheme();
+    useEffect(() => {
+        if (location.state !== null) {
+            setMessage(location.state);
+            setToast(true);
+        }
+    }, [])
 
     return (
         <>
@@ -256,6 +281,11 @@ const Header = () => {
                     }
                 </List>
             </Drawer>
+            <Snackbar open={toast} autoHideDuration={2500} onClose={() => { setToast(false) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
+                <Alert onClose={() => { setToast(false) }} severity={"success"} sx={{ width: '150%' }}>
+                    {message === "logout" ? <>Đăng xuất thành công </> : <>Đăng nhập thành công</>}
+                </Alert>
+            </Snackbar >
         </>
     );
 }

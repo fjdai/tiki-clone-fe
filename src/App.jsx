@@ -20,6 +20,7 @@ import AdminPage from "./pages/admin/index.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/index.jsx";
 import LayoutAdmin from "./components/Admin/LayoutAdmin.jsx";
 import Box from "@mui/material/Box";
+import ManageUsers from "./pages/admin/manageUsers/index.jsx";
 
 const Layout = () => {
   return (
@@ -91,11 +92,19 @@ export default function App() {
         },
         {
           path: "user",
-          element: <ContactPage />,
+          element:
+            <ProtectedRoute>
+              <ManageUsers />
+            </ProtectedRoute>
+          ,
         },
         {
           path: "book",
-          element: <BookPage />,
+          element:
+            <ProtectedRoute>
+              <BookPage />
+            </ProtectedRoute>
+          ,
         },
       ],
     },

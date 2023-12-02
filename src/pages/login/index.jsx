@@ -45,7 +45,7 @@ export default function LoginPage() {
         if (res?.data) {
             localStorage.setItem("access_token", res.data.access_token);
             dispatch(doLoginAction(res.data.user))
-            navigate("/")
+            navigate("/", { state: "login" })
         } else {
             setToast({ ...toast, open: true, type: "error", message: [res.message] });
         };
