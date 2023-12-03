@@ -46,7 +46,7 @@ export default function TableUser(props) {
     const { listUsers,
         currentPage, setCurrentPage,
         rowsPerPage, setRowsPerPage,
-        pages,
+        pages, open
     } = props
 
     const [order, setOrder] = useState('asc');
@@ -182,17 +182,20 @@ export default function TableUser(props) {
                         setCurrentPage(value - 1);
                     }}
                     color="primary" shape="rounded" />
-                <Select
-                    sx={{ width: 115 }}
-                    size='small'
-                    value={rowsPerPage}
-                    onChange={handleOnChange}
-                >
-                    <MenuItem value={1}>1 / page</MenuItem>
-                    <MenuItem value={5}>5 / page</MenuItem>
-                    <MenuItem value={10}>10 / page</MenuItem>
-                    <MenuItem value={20}>20 / page</MenuItem>
-                </Select>
+                {open ?
+                    <Select
+                        sx={{ width: 115 }}
+                        size='small'
+                        value={rowsPerPage}
+                        onChange={handleOnChange}
+                    >
+                        <MenuItem value={1}>1 / page</MenuItem>
+                        <MenuItem value={5}>5 / page</MenuItem>
+                        <MenuItem value={10}>10 / page</MenuItem>
+                        <MenuItem value={20}>20 / page</MenuItem>
+                    </Select>
+                    :
+                    <></>}
             </Box>
         </Box>
     );

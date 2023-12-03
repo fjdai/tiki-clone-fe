@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { fetchAllUser, fetchUser } from '../../../services/apiAdmin/apiManageUsers';
 
 const FormSearch = (props) => {
-    const { countPageSearch, user, setUser, setCurrentPage, setListUsers, setPages } = props;
+    const { countPageSearch, user, setUser, setCurrentPage, setListUsers, setPages, setOpen } = props;
 
 
     const handleOnChange = (event) => {
@@ -30,12 +30,17 @@ const FormSearch = (props) => {
             setListUsers(res.data);
             setPages(count.data.meta.pages)
         }
+        setOpen(true);
     }
 
     const handleSearchUserPages = async () => {
+        if (!user.name && !user.email && !user.phone) {
+            return;
+        }
         const queryList = `fullName=/${user.name}/i&pageSize=10000&current=1&email=/${user.email}/i&phone=/${user.phone}/i`;
         const list = await fetchUser(queryList);
         if (list && list.data) {
+            setOpen(false);
             setListUsers(list.data.result);
             countPageSearch()
             setCurrentPage(0);

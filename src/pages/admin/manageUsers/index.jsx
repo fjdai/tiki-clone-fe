@@ -8,7 +8,6 @@ const ManageUsers = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [pages, setPages] = useState(1);
-    const [flag, setFlag] = useState(true);
 
     const [user, setUser] = useState({
         name: "",
@@ -16,6 +15,8 @@ const ManageUsers = () => {
         phone: ""
 
     })
+
+    const [open, setOpen] = useState(true);
 
     const countPages = async () => {
         const query = `pageSize=${rowsPerPage}&current=${currentPage + 1}`;
@@ -31,17 +32,10 @@ const ManageUsers = () => {
         if (res && res.data) {
             setPages(res.data.meta.pages);
         }
-
-
     }
 
     useEffect(() => {
-        if (flag) {
-            countPages();
-        }
-        else {
-            countPageSearch();
-        }
+        countPages();
     }, [rowsPerPage])
 
     const fetchListUser = async () => {
@@ -65,7 +59,7 @@ const ManageUsers = () => {
                 user={user}
                 setUser={setUser}
                 countPageSearch={countPageSearch}
-
+                setOpen={setOpen}
             />
             <UserTable
                 pages={pages}
@@ -75,6 +69,7 @@ const ManageUsers = () => {
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
                 listUsers={listUsers}
+                open={open}
             />
         </>
     )
