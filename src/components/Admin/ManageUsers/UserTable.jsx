@@ -12,7 +12,10 @@ import { visuallyHidden } from '@mui/utils';
 import Select from '@mui/material/Select';
 import Pagination from '@mui/material/Pagination';
 import MenuItem from '@mui/material/MenuItem';
-
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import IconButton from '@mui/material/IconButton';
+import { Button } from '@mui/material';
+import DetailUser from './DetailUser';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -51,8 +54,8 @@ export default function TableUser(props) {
 
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState("fullName");
-
-
+    const [user, setUser] = useState({});
+    const [openDetailUser, setOpenDetailUser] = useState(false);
 
 
     const handleRequestSort = (property) => {
@@ -75,8 +78,15 @@ export default function TableUser(props) {
         setRowsPerPage(event.target.value)
     }
 
+    const handleDetailUser = (value) => {
+        setUser(value);
+        setOpenDetailUser(true);
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
+            <DetailUser user={user} open={openDetailUser} setOpen={setOpenDetailUser} />
+
             <TableContainer component={Paper}>
                 <Table
                     sx={{ minWidth: 750 }}
@@ -164,12 +174,18 @@ export default function TableUser(props) {
                                     tabIndex={-1}
                                 >
                                     <TableCell>
-                                        {row._id}
+                                        <Button color='info' sx={{ p: 0 }} onClick={() => { handleDetailUser(row) }}>
+                                            {row._id}
+                                        </Button>
                                     </TableCell>
                                     <TableCell >{row.fullName}</TableCell>
                                     <TableCell >{row.email}</TableCell>
                                     <TableCell >{row.phone}</TableCell>
-                                    <TableCell ><button>ad</button></TableCell>
+                                    <TableCell >
+                                        <IconButton sx={{ p: 0 }}>
+                                            <DeleteOutlinedIcon color='error' />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}

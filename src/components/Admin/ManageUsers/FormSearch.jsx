@@ -49,16 +49,14 @@ const FormSearch = (props) => {
 
     return (
         <>
-            <Box component={Paper} sx={{ display: 'flex', flexDirection: "column", mb: 5, padding: 3, gap: 3 }}>
+            <Box component={Paper} sx={{ display: 'flex', flexDirection: "column", mb: 5, padding: 2.5, gap: 2.5 }}>
                 <Box sx={{ ml: 3.5 }}>
                     <Typography variant='h4'>Filter</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: "space-around" }}>
                     <TextField
-                        autoFocus
                         onChange={(event) => handleOnChange(event)}
                         label="Tên hiển thị"
-                        autoComplete='off'
                         value={user.name}
                         name="name"
                         type='text'
@@ -66,7 +64,6 @@ const FormSearch = (props) => {
                     />
                     <TextField
                         value={user.email}
-                        autoComplete='off'
                         label="Email"
                         onChange={(event) => handleOnChange(event)}
                         name="email"
@@ -76,7 +73,6 @@ const FormSearch = (props) => {
                     />
                     <TextField
                         value={user.phone}
-                        autoComplete='off'
                         label="Số điện thoại"
                         onChange={(event) => handleOnChange(event)}
                         name="phone"
