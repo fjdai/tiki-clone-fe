@@ -13,23 +13,6 @@ import Select from '@mui/material/Select';
 import Pagination from '@mui/material/Pagination';
 import MenuItem from '@mui/material/MenuItem';
 
-function createData(id, name, email, phone) {
-    return {
-        id,
-        name,
-        email,
-        phone,
-    };
-}
-
-const rows = [
-    createData(1, "d", "phangiadaizxc@gmail.com", 63),
-    createData(2, "a", "adaizxc@gmail.com", 3),
-    createData(3, "b", "phangiadzxc@gmail.com", 5),
-    createData(4, "c", "iadaizxc@gmail.com", 6),
-
-
-];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -59,12 +42,18 @@ function stableSort(array, comparator) {
     return stabilizedThis.map((el) => el[0]);
 }
 
+export default function TableUser(props) {
+    const { listUsers,
+        currentPage, setCurrentPage,
+        rowsPerPage, setRowsPerPage,
+        pages,
+    } = props
 
-export default function TableUser() {
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState("name");
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [orderBy, setOrderBy] = useState("fullName");
+
+
+
 
     const handleRequestSort = (property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -72,14 +61,19 @@ export default function TableUser() {
         setOrderBy(property);
     };
 
+
     const visibleRows = useMemo(
         () =>
-            stableSort(rows, getComparator(order, orderBy)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage,
+            stableSort(listUsers, getComparator(order, orderBy)).slice(
+                currentPage * rowsPerPage,
+                currentPage * rowsPerPage + rowsPerPage,
             ),
-        [order, orderBy, page, rowsPerPage],
+        [order, orderBy, currentPage, rowsPerPage, listUsers],
     );
+
+    const handleOnChange = (event) => {
+        setRowsPerPage(event.target.value)
+    }
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -108,15 +102,15 @@ export default function TableUser() {
                             </TableCell>
                             <TableCell
                                 sx={{ fontWeight: 600 }}
-                                sortDirection={orderBy === "name" ? order : false}
+                                sortDirection={orderBy === "fullName" ? order : false}
                             >
                                 <TableSortLabel
-                                    active={orderBy === "name"}
-                                    direction={orderBy === "name" ? order : 'asc'}
-                                    onClick={() => { handleRequestSort("name") }}
+                                    active={orderBy === "fullName"}
+                                    direction={orderBy === "fullName" ? order : 'asc'}
+                                    onClick={() => { handleRequestSort("fullName") }}
                                 >
                                     Tên hiển thị
-                                    {orderBy === "name" ? (
+                                    {orderBy === "fullName" ? (
                                         <Box component="span" sx={visuallyHidden}>
                                             {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                         </Box>
@@ -161,17 +155,18 @@ export default function TableUser() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {visibleRows.map((row) => {
+                        {visibleRows.map((row, index) => {
 
                             return (
                                 <TableRow
+                                    key={`row-${index}`}
                                     hover
                                     tabIndex={-1}
                                 >
                                     <TableCell>
-                                        {row.id}
+                                        {row._id}
                                     </TableCell>
-                                    <TableCell >{row.name}</TableCell>
+                                    <TableCell >{row.fullName}</TableCell>
                                     <TableCell >{row.email}</TableCell>
                                     <TableCell >{row.phone}</TableCell>
                                     <TableCell ><button>ad</button></TableCell>
@@ -182,18 +177,16 @@ export default function TableUser() {
                 </Table>
             </TableContainer>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "right", mt: 3 }}>
-                <Pagination count={13} page={page + 1}
+                <Pagination count={pages} page={currentPage + 1}
                     onChange={(event, value) => {
-                        setPage(value - 1);
+                        setCurrentPage(value - 1);
                     }}
                     color="primary" shape="rounded" />
                 <Select
                     sx={{ width: 115 }}
                     size='small'
                     value={rowsPerPage}
-                    onChange={event => {
-                        setRowsPerPage(event.target.value)
-                    }}
+                    onChange={handleOnChange}
                 >
                     <MenuItem value={1}>1 / page</MenuItem>
                     <MenuItem value={5}>5 / page</MenuItem>

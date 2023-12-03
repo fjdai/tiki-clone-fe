@@ -3,17 +3,10 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { fetchAllUser, fetchUser } from '../../../services/apiAdmin/apiManageUsers';
 
-const FormSearch = () => {
-
-    const [user, setUser] = useState({
-        name: "",
-        email: "",
-        phone: ""
-
-    })
-
+const FormSearch = (props) => {
+    const { countPageSearch, user, setUser, setCurrentPage, setListUsers, setPages } = props;
 
 
     const handleOnChange = (event) => {
@@ -21,6 +14,32 @@ const FormSearch = () => {
             ...user,
             [event.target.name]: event.target.value
         });
+    }
+
+    const handleClearUser = async () => {
+        setUser({
+            name: "",
+            email: "",
+            phone: ""
+
+        });
+        const query = `pageSize=${5}&current=${1}`;
+        const res = await fetchAllUser();
+        const count = await fetchUser(query);
+        if (res && res.data && count && count.data) {
+            setListUsers(res.data);
+            setPages(count.data.meta.pages)
+        }
+    }
+
+    const handleSearchUserPages = async () => {
+        const queryList = `fullName=/${user.name}/i&pageSize=10000&current=1&email=/${user.email}/i&phone=/${user.phone}/i`;
+        const list = await fetchUser(queryList);
+        if (list && list.data) {
+            setListUsers(list.data.result);
+            countPageSearch()
+            setCurrentPage(0);
+        }
     }
 
     return (
@@ -68,18 +87,18 @@ const FormSearch = () => {
                         sx={{ width: 100 }}
                         variant="contained"
                         color='primary'
-                        onClick={() => { alert("me") }}
+                        onClick={handleSearchUserPages}
                     >
-                        Save
+                        Search
                     </Button>
                     <Button
                         sx={{ width: 100 }}
                         color='primary'
                         variant="outlined"
-                        onClick={() => { alert("me") }}
+                        onClick={handleClearUser}
 
                     >
-                        Cancel
+                        Clear
                     </Button>
                 </Box>
             </Box >
