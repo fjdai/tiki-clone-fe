@@ -42,12 +42,13 @@ export default function LoginPage() {
         setIsLoading(true);
         const res = await callLogin(user.username, user.password);
         setIsLoading(false);
-        if (res?.data) {
+        if (res && res.data) {
             localStorage.setItem("access_token", res.data.access_token);
-            dispatch(doLoginAction(res.data.user))
+            dispatch(doLoginAction(res?.data?.user))
             navigate("/", { state: "login" })
         } else {
             setToast({ ...toast, open: true, type: "error", message: [res.message] });
+            return;
         };
     };
 
@@ -94,7 +95,7 @@ export default function LoginPage() {
                     >
                         <Avatar alt="BuyBook" src="../../../src/assets/buybook.png" sx={{ m: 1, width: 100, height: 100 }} variant="square" />
                         <Typography variant="h5">
-                            Sign In
+                            Log In
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
@@ -139,11 +140,6 @@ export default function LoginPage() {
 
                             </Button>
                             <Grid container>
-                                {/* <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid> */}
                                 <Grid item xs={12} sx={{
                                     justifyContent: "center",
                                     display: "flex"

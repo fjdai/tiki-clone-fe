@@ -14,8 +14,13 @@ import Pagination from '@mui/material/Pagination';
 import MenuItem from '@mui/material/MenuItem';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import DetailUser from './DetailUser';
+import Typography from '@mui/material/Typography';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -88,6 +93,23 @@ export default function TableUser(props) {
             <DetailUser user={user} open={openDetailUser} setOpen={setOpenDetailUser} />
 
             <TableContainer component={Paper}>
+                <Box sx={{ display: "flex", justifyContent: 'space-between', p: 2, borderBottom: 1 }}>
+                    <Typography variant='h5'>Table List Users</Typography>
+                    <Box sx={{ display: "flex", gap: 3 }}>
+                        <Button variant="contained" color='primary'>
+                            <ExitToAppOutlinedIcon sx={{ mr: 1 }} />
+                            Export</Button>
+                        <Button variant="contained" color='primary' >
+                            <FileUploadOutlinedIcon sx={{ mr: 1 }} />
+                            Import</Button>
+                        <Button variant="contained" color='primary'>
+                            <AddOutlinedIcon sx={{ mr: 1 }} />
+                            Thêm mới</Button>
+                        <IconButton color='primary' sx={{ mr: 3 }}>
+                            <RefreshIcon />
+                        </IconButton>
+                    </Box>
+                </Box>
                 <Table
                     sx={{ minWidth: 750 }}
                 >

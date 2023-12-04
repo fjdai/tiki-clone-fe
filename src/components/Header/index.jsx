@@ -100,6 +100,8 @@ const Header = () => {
     window.history.replaceState({}, document.title)
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
+    const user = useSelector(state => state.account.user);
+    const role = user.role;
     const avt = useSelector(state => state.account.user?.avatar);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -133,25 +135,51 @@ const Header = () => {
 
 
     const renderMenu = (
-        <Menu
-            sx={{ mt: '45px' }}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            // id={menuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-        >
-            <MenuItem onClick={() => alert("me")}>Manage User</MenuItem>
-            <MenuItem onClick={handleLogout}>Log Out</MenuItem>
-        </Menu>
+        <>
+            {role === "ADMIN" ?
+                <Menu
+                    sx={{ mt: '45px' }}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    // id={menuId}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isMenuOpen}
+                    onClose={handleMenuClose}
+                >
+                    <MenuItem onClick={() => navigate("/admin")}>Trang quản trị</MenuItem>
+                    <MenuItem onClick={() => alert("me")}>Quản lí tài khoản</MenuItem>
+                    <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                </Menu>
+
+                :
+                <Menu
+                    sx={{ mt: '45px' }}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    // id={menuId}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={isMenuOpen}
+                    onClose={handleMenuClose}
+                >
+                    <MenuItem onClick={() => alert("me")}>Quản lí tài khoản</MenuItem>
+                    <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+                </Menu >
+            }</>
+
     );
 
     useEffect(() => {
@@ -210,7 +238,8 @@ const Header = () => {
                                     onClick={handleProfileMenuOpen}
                                     color="inherit"
                                 >
-                                    <Avatar src={avt} />
+                                    <Avatar sx={{ backgroundColor: "#fff" }} src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${avt}`} />
+
                                 </IconButton>
                             </Box>
                         </>
@@ -254,33 +283,56 @@ const Header = () => {
                 <List>
                     {isAuthenticated ?
                         <>
-                            <ListItem disablePadding>
-                                <ListItemButton>
-                                    <ListItemText >Manage User</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
-                            <ListItem disablePadding>
-                                <ListItemButton>
-                                    <ListItemText >Log Out</ListItemText>
-                                </ListItemButton>
-                            </ListItem>
+                            {role === "ADMIN" ?
+                                <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton onClick={() => navigate("/admin")}>
+                                            <ListItemText >Trang quản trị</ListItemText>
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton>
+                                            <ListItemText >Quản lí tài khoản</ListItemText>
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton onClick={handleLogout}>
+                                            <ListItemText >Log Out</ListItemText>
+                                        </ListItemButton>
+                                    </ListItem>
+                                </>
+                                :
+                                <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton>
+                                            <ListItemText >Quản lí tài khoản</ListItemText>
+                                        </ListItemButton>
+                                    </ListItem>
+                                    <ListItem disablePadding>
+                                        <ListItemButton onClick={handleLogout}>
+                                            <ListItemText >Log Out</ListItemText>
+                                        </ListItemButton>
+                                    </ListItem>
+                                </>
+                            }
+
                         </>
                         :
                         <>
                             <ListItem disablePadding>
                                 <ListItemButton>
-                                    <ListItemText >Log In</ListItemText>
+                                    <ListItemText onClick={() => navigate("/login")}>Log In</ListItemText>
                                 </ListItemButton>
                             </ListItem>
                             <ListItem disablePadding>
-                                <ListItemButton>
-                                    <ListItemText >Sign Up</ListItemText>
+                                <ListItemButton onClick={() => navigate("/register")}>
+                                    <ListItemText  > Sign Up</ListItemText>
                                 </ListItemButton>
                             </ListItem>
                         </>
                     }
                 </List>
-            </Drawer>
+            </Drawer >
             <Snackbar open={toast} autoHideDuration={2500} onClose={() => { setToast(false) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
                 <Alert onClose={() => { setToast(false) }} severity={"success"} sx={{ width: '150%' }}>
                     {message === "logout" ? <>Đăng xuất thành công </> : <>Đăng nhập thành công</>}

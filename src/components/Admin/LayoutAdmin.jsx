@@ -130,6 +130,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const LayoutAdmin = () => {
   const navigate = useNavigate();
   const role = useSelector(state => state.account.user.role);
+  const avt = useSelector(state => state.account.user.avatar);
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -177,7 +178,8 @@ const LayoutAdmin = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => alert("me")}>Manage User</MenuItem>
+      <MenuItem onClick={() => navigate("/")}>Trang chủ</MenuItem>
+      <MenuItem onClick={() => alert("me")}>Quản lí tài khoản</MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
@@ -217,7 +219,7 @@ const LayoutAdmin = () => {
                   onClick={handleProfileMenuOpen}
                   color="inherit"
                 >
-                  <Avatar />
+                  <Avatar sx={{ backgroundColor: "#fff" }} src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${avt}`} />
                 </IconButton>
               </Toolbar>
             </AppBar>
