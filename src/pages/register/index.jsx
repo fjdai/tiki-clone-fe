@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
 
     const [user, setUser] = useState({
-        fullname: "",
+        fullName: "",
         email: "",
         password: "",
         phone: ""
@@ -40,7 +40,7 @@ export default function RegisterPage() {
     const handleOnSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        const res = await callRegister(user.fullname, user.email, user.password, user.phone);
+        const res = await callRegister(user.fullName, user.email, user.password, user.phone);
         setIsLoading(false);
         if (res?.data?._id) {
             navigate("/login", { state: { ...toast, open: true, type: "success" } })
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                                 label="Full Name"
                                 autoComplete='off'
                                 value={user.fullname}
-                                name="fullname"
+                                name="fullName"
                                 type='text'
                             />
                             <TextField
@@ -168,6 +168,7 @@ export default function RegisterPage() {
                 <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '150%' }}>
                     {toast.type === "error" ? <>{toast.message}</> : <>Đăng ký tài khoản thành công!</>}
                 </Alert>
-            </Snackbar ></>
+            </Snackbar >
+        </>
     );
 }

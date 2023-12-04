@@ -8,7 +8,6 @@ import moment from 'moment-timezone';
 
 const DetailUser = (props) => {
     const { user, open, setOpen } = props;
-    console.log(user);
 
     return (
         <>

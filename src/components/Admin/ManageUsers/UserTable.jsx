@@ -21,6 +21,10 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import ModalAddNewUser from './ModalAddNewUser';
+import moment from 'moment-timezone';
+import DragDropFileUpload from './DragDropFileUpload';
+import ModalUploadFile from './ModalUploadFile';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -54,13 +58,17 @@ export default function TableUser(props) {
     const { listUsers,
         currentPage, setCurrentPage,
         rowsPerPage, setRowsPerPage,
-        pages, open
+        pages, open,
+        reload, setReload,
     } = props
 
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState("fullName");
     const [user, setUser] = useState({});
     const [openDetailUser, setOpenDetailUser] = useState(false);
+    const [openModalAddNewUser, setOpenModalAddNewUser] = useState(false);
+    const [openModalUploadFile, setOpenModalUploadFile] = useState(false);
+
 
 
     const handleRequestSort = (property) => {
@@ -88,8 +96,35 @@ export default function TableUser(props) {
         setOpenDetailUser(true);
     }
 
+    const handleReloadTable = async () => {
+        setReload(!reload);
+        setCurrentPage(0);
+    }
+
+
+
+    const handleAddNewUser = () => {
+        setOpenModalAddNewUser(true);
+    }
+
+    const handleImportUser = () => {
+        setOpenModalUploadFile(true);
+    }
+
     return (
         <Box sx={{ width: '100%' }}>
+
+            <ModalUploadFile
+                open={openModalUploadFile}
+                setOpen={setOpenModalUploadFile} />
+
+            <ModalAddNewUser
+                open={openModalAddNewUser}
+                setOpen={setOpenModalAddNewUser}
+                reload={reload}
+                setReload={setReload}
+            />
+
             <DetailUser user={user} open={openDetailUser} setOpen={setOpenDetailUser} />
 
             <TableContainer component={Paper}>
@@ -99,13 +134,13 @@ export default function TableUser(props) {
                         <Button variant="contained" color='primary'>
                             <ExitToAppOutlinedIcon sx={{ mr: 1 }} />
                             Export</Button>
-                        <Button variant="contained" color='primary' >
+                        <Button onClick={handleImportUser} variant="contained" color='primary' >
                             <FileUploadOutlinedIcon sx={{ mr: 1 }} />
                             Import</Button>
-                        <Button variant="contained" color='primary'>
+                        <Button onClick={handleAddNewUser} variant="contained" color='primary'>
                             <AddOutlinedIcon sx={{ mr: 1 }} />
                             Thêm mới</Button>
-                        <IconButton color='primary' sx={{ mr: 3 }}>
+                        <IconButton onClick={handleReloadTable} color='primary' sx={{ mr: 3 }}>
                             <RefreshIcon />
                         </IconButton>
                     </Box>

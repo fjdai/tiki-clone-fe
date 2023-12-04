@@ -8,6 +8,7 @@ const ManageUsers = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [pages, setPages] = useState(1);
+    const [reload, setReload] = useState(true);
 
     const [user, setUser] = useState({
         name: "",
@@ -36,7 +37,7 @@ const ManageUsers = () => {
 
     useEffect(() => {
         countPages();
-    }, [rowsPerPage])
+    }, [rowsPerPage, reload])
 
     const fetchListUser = async () => {
         const res = await fetchAllUser();
@@ -47,7 +48,7 @@ const ManageUsers = () => {
 
     useEffect(() => {
         fetchListUser();
-    }, [])
+    }, [reload])
 
     return (
         <>
@@ -62,6 +63,8 @@ const ManageUsers = () => {
                 setOpen={setOpen}
             />
             <UserTable
+                reload={reload}
+                setReload={setReload}
                 pages={pages}
                 setPages={setPages}
                 currentPage={currentPage}
@@ -69,6 +72,7 @@ const ManageUsers = () => {
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
                 listUsers={listUsers}
+                setListUsers={setListUsers}
                 open={open}
             />
         </>
