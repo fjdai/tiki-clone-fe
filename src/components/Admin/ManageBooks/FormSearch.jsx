@@ -3,48 +3,41 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { fetchAllUser, fetchUser } from '../../../services/apiAdmin/apiManageUsers';
+import { useState } from 'react';
 
 const FormSearch = (props) => {
-    const { countPageSearch, user, setUser, setCurrentPage, setListUsers, setPages, setOpen } = props;
+    const { setCurrentPage, setBook } = props;
 
+    const [data, setData] = useState({
+        mainText: "",
+        author: "",
+        category: ""
+    })
 
     const handleOnChange = (event) => {
-        setUser({
-            ...user,
+        setData({
+            ...data,
             [event.target.name]: event.target.value
         });
     }
 
-    const handleClearUser = async () => {
-        setUser({
-            name: "",
-            email: "",
-            phone: ""
-
+    const handleClearBook = () => {
+        setData({
+            mainText: "",
+            author: "",
+            category: ""
         });
-        const query = `pageSize=${5}&current=${1}`;
-        const res = await fetchAllUser();
-        const count = await fetchUser(query);
-        if (res && res.data && count && count.data) {
-            setListUsers(res.data);
-            setPages(count.data.meta.pages)
-        }
-        setOpen(true);
+        setBook({
+            mainText: "",
+            author: "",
+            category: ""
+        });
+        setCurrentPage(0);
     }
 
-    const handleSearchUserPages = async () => {
-        if (!user.name && !user.email && !user.phone) {
-            return;
-        }
-        const queryList = `fullName=/${user.name}/i&pageSize=10000&current=1&email=/${user.email}/i&phone=/${user.phone}/i`;
-        const list = await fetchUser(queryList);
-        if (list && list.data) {
-            setOpen(false);
-            setListUsers(list.data.result);
-            countPageSearch()
-            setCurrentPage(0);
-        }
+    const handleSearchBook = () => {
+        setBook(data);
+        setCurrentPage(0);
     }
 
     return (
@@ -56,28 +49,28 @@ const FormSearch = (props) => {
                 <Box sx={{ display: 'flex', justifyContent: "space-around" }}>
                     <TextField
                         onChange={(event) => handleOnChange(event)}
-                        label="Tên hiển thị"
-                        value={user.name}
-                        name="name"
+                        label="Tên sách"
+                        value={data.mainText}
+                        name="mainText"
                         type='text'
                         sx={{ width: 400 }}
                         autoComplete='off'
                     />
                     <TextField
-                        value={user.email}
-                        label="Email"
+                        value={data.author}
+                        label="Tác giả"
                         onChange={(event) => handleOnChange(event)}
-                        name="email"
+                        name="author"
                         type='text'
                         autoComplete='off'
                         sx={{ width: 400 }}
 
                     />
                     <TextField
-                        value={user.phone}
-                        label="Số điện thoại"
+                        value={data.category}
+                        label="Thể loại"
                         onChange={(event) => handleOnChange(event)}
-                        name="phone"
+                        name="category"
                         type='text'
                         autoComplete='off'
                         sx={{ width: 400 }}
@@ -91,7 +84,7 @@ const FormSearch = (props) => {
                         sx={{ width: 100 }}
                         variant="contained"
                         color='primary'
-                        onClick={handleSearchUserPages}
+                        onClick={handleSearchBook}
                     >
                         Search
                     </Button>
@@ -99,7 +92,7 @@ const FormSearch = (props) => {
                         sx={{ width: 100 }}
                         color='primary'
                         variant="outlined"
-                        onClick={handleClearUser}
+                        onClick={handleClearBook}
 
                     >
                         Clear

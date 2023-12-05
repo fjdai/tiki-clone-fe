@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,66 +16,32 @@ import MenuItem from '@mui/material/MenuItem';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import DetailUser from './DetailUser';
+import DetailBook from './DetailBook';
 import Typography from '@mui/material/Typography';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
-import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import ModalAddNewUser from './ModalAddNewUser';
-import ModalUploadFile from './ModalUploadFile';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { callDeleteUser } from "../../../services/apiAdmin/apiManageUsers";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import ModalUpdateUser from "./ModalUpdateUser";
+import { callListBook } from "../../../services/apiAdmin/apiManageBooks";
+import moment from "moment-timezone";
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
-export default function TableUser(props) {
-    const { listUsers,
-        currentPage, setCurrentPage,
+export default function BookTable(props) {
+    const { currentPage, setCurrentPage,
         rowsPerPage, setRowsPerPage,
-        pages, open,
-        reload, setReload,
+        pages, setPages,
+        book, setBook,
+        open,
     } = props
 
+    const [rows, setRows] = useState([]);
     const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState("fullName");
-    const [user, setUser] = useState({});
-    const [openDetailUser, setOpenDetailUser] = useState(false);
+    const [orderBy, setOrderBy] = useState("mainText");
+    const [openDetailBook, setOpenDetailBook] = useState(false);
 
-
-    const [openModalAddNewUser, setOpenModalAddNewUser] = useState(false);
-    const [openModalUpdateUser, setOpenModalUpdateUser] = useState(false);
-    const [openModalUploadFile, setOpenModalUploadFile] = useState(false);
-
+    const [currentBook, setCurrentBook] = useState({});
 
     const [toast, setToast] = useState({
         open: false,
@@ -83,54 +49,70 @@ export default function TableUser(props) {
         message: ""
     });
 
+    const fetchListBooks = async () => {
+        if (order === "asc") {
+            const res = await callListBook(currentPage + 1, rowsPerPage, `+${orderBy}`, book.mainText, book.author, book.category);
+            if (res && res.data) {
+                setRows(res.data.result);
+                setPages(res.data.meta.pages);
+            }
+        }
+        if (order === "desc") {
+            const res = await callListBook(currentPage + 1, rowsPerPage, `-${orderBy}`, book.mainText, book.author, book.category);
+            if (res && res.data) {
+                setRows(res.data.result);
+                setPages(res.data.meta.pages);
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchListBooks();
+    }, [order, orderBy, currentPage, rowsPerPage, book])
 
     const handleRequestSort = (property) => {
+        console.log(property);
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-
-    const visibleRows = useMemo(
-        () =>
-            stableSort(listUsers, getComparator(order, orderBy)).slice(
-                currentPage * rowsPerPage,
-                currentPage * rowsPerPage + rowsPerPage,
-            ),
-        [order, orderBy, currentPage, rowsPerPage, listUsers],
-    );
 
     const handleOnChange = (event) => {
         setRowsPerPage(event.target.value)
         setCurrentPage(0);
     }
 
-    const handleDetailUser = (value) => {
-        setUser(value);
-        setOpenDetailUser(true);
+    const handleDetailBook = (value) => {
+        setCurrentBook(value);
+        setOpenDetailBook(true);
     }
 
     const handleReloadTable = async () => {
-        setReload(!reload);
+        setOrder("asc");
+        setOrderBy("updatedAt")
+        setRowsPerPage(5)
         setCurrentPage(0);
+        setBook({
+            mainText: "",
+            author: "",
+            category: ""
+        })
     }
 
-    const handleAddNewUser = () => {
-        setOpenModalAddNewUser(true);
-    }
+    // const handleAddNewUser = () => {
+    //     setOpenModalAddNewUser(true);
+    // }
 
-    const handleImportUser = () => {
-        setOpenModalUploadFile(true);
-    }
 
-    const handleExportUser = () => {
-        if (listUsers.length > 0) {
-            const worksheet = XLSX.utils.json_to_sheet(listUsers);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-            XLSX.writeFile(workbook, "ExportUser.csv");
-        }
-    }
+
+    // const handleExportUser = () => {
+    //     if (listUsers.length > 0) {
+    //         const worksheet = XLSX.utils.json_to_sheet(listUsers);
+    //         const workbook = XLSX.utils.book_new();
+    //         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    //         XLSX.writeFile(workbook, "ExportUser.csv");
+    //     }
+    // }
 
     const handleDeleteUser = async (id) => {
         const res = await callDeleteUser(id);
@@ -155,53 +137,17 @@ export default function TableUser(props) {
 
     return (
         <>
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.message}
-                </Alert>
-            </Snackbar >
             <Box sx={{ width: '100%' }}>
-                <ModalUploadFile
-                    toast={toast}
-                    setToast={setToast}
-                    openToast={openToast}
-                    open={openModalUploadFile}
-                    setOpen={setOpenModalUploadFile}
-                    reload={reload}
-                    setReload={setReload} />
-
-                <ModalAddNewUser
-                    open={openModalAddNewUser}
-                    setOpen={setOpenModalAddNewUser}
-                    reload={reload}
-                    setReload={setReload}
-                />
-
-                <ModalUpdateUser
-                    toast={toast}
-                    setToast={setToast}
-                    openToast={openToast}
-                    open={openModalUpdateUser}
-                    setOpen={setOpenModalUpdateUser}
-                    reload={reload}
-                    setReload={setReload}
-                    user={user}
-                    setUser={setUser}
-                />
-
-                <DetailUser user={user} open={openDetailUser} setOpen={setOpenDetailUser} />
+                <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
 
                 <TableContainer component={Paper}>
                     <Box sx={{ display: "flex", justifyContent: 'space-between', p: 2, borderBottom: 1 }}>
-                        <Typography variant='h5'>Table List Users</Typography>
+                        <Typography variant='h5'>Table List Books</Typography>
                         <Box sx={{ display: "flex", gap: 3 }}>
-                            <Button onClick={handleExportUser} variant="contained" color='primary'>
+                            <Button variant="contained" color='primary'>
                                 <ExitToAppOutlinedIcon sx={{ mr: 1 }} />
                                 Export</Button>
-                            <Button onClick={handleImportUser} variant="contained" color='primary' >
-                                <FileUploadOutlinedIcon sx={{ mr: 1 }} />
-                                Import</Button>
-                            <Button onClick={handleAddNewUser} variant="contained" color='primary'>
+                            <Button variant="contained" color='primary'>
                                 <AddOutlinedIcon sx={{ mr: 1 }} />
                                 Thêm mới</Button>
                             <IconButton onClick={handleReloadTable} color='primary' sx={{ mr: 3 }}>
@@ -216,12 +162,12 @@ export default function TableUser(props) {
                             <TableRow>
                                 <TableCell
                                     sx={{ fontWeight: 600 }}
-                                    sortDirection={orderBy === "id" ? order : false}
+                                    sortDirection={orderBy === "_id" ? order : false}
                                 >
                                     <TableSortLabel
-                                        active={orderBy === "id"}
-                                        direction={orderBy === "id" ? order : 'asc'}
-                                        onClick={() => { handleRequestSort("id") }}
+                                        active={orderBy === "_id"}
+                                        direction={orderBy === "_id" ? order : 'asc'}
+                                        onClick={() => { handleRequestSort("_id") }}
                                     >
                                         Id
                                         {orderBy === "id" ? (
@@ -233,15 +179,15 @@ export default function TableUser(props) {
                                 </TableCell>
                                 <TableCell
                                     sx={{ fontWeight: 600 }}
-                                    sortDirection={orderBy === "fullName" ? order : false}
+                                    sortDirection={orderBy === "mainText" ? order : false}
                                 >
                                     <TableSortLabel
-                                        active={orderBy === "fullName"}
-                                        direction={orderBy === "fullName" ? order : 'asc'}
-                                        onClick={() => { handleRequestSort("fullName") }}
+                                        active={orderBy === "mainText"}
+                                        direction={orderBy === "mainText" ? order : 'asc'}
+                                        onClick={() => { handleRequestSort("mainText") }}
                                     >
-                                        Tên hiển thị
-                                        {orderBy === "fullName" ? (
+                                        Tên sách
+                                        {orderBy === "mainText" ? (
                                             <Box component="span" sx={visuallyHidden}>
                                                 {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                             </Box>
@@ -250,15 +196,15 @@ export default function TableUser(props) {
                                 </TableCell>
                                 <TableCell
                                     sx={{ fontWeight: 600 }}
-                                    sortDirection={orderBy === "email" ? order : false}
+                                    sortDirection={orderBy === "category" ? order : false}
                                 >
                                     <TableSortLabel
-                                        active={orderBy === "email"}
-                                        direction={orderBy === "email" ? order : 'asc'}
-                                        onClick={() => { handleRequestSort("email") }}
+                                        active={orderBy === "category"}
+                                        direction={orderBy === "category" ? order : 'asc'}
+                                        onClick={() => { handleRequestSort("category") }}
                                     >
-                                        Email
-                                        {orderBy === "email " ? (
+                                        Thể loại
+                                        {orderBy === "category " ? (
                                             <Box component="span" sx={visuallyHidden}>
                                                 {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                             </Box>
@@ -267,15 +213,32 @@ export default function TableUser(props) {
                                 </TableCell>
                                 <TableCell
                                     sx={{ fontWeight: 600 }}
-                                    sortDirection={orderBy === "phone" ? order : false}
+                                    sortDirection={orderBy === "author" ? order : false}
                                 >
                                     <TableSortLabel
-                                        active={orderBy === "phone"}
-                                        direction={orderBy === "phone" ? order : 'asc'}
-                                        onClick={() => { handleRequestSort("phone") }}
+                                        active={orderBy === "author"}
+                                        direction={orderBy === "author" ? order : 'asc'}
+                                        onClick={() => { handleRequestSort("author") }}
                                     >
-                                        Số điện thoại
-                                        {orderBy === "phone" ? (
+                                        Tác giả
+                                        {orderBy === "author" ? (
+                                            <Box component="span" sx={visuallyHidden}>
+                                                {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                            </Box>
+                                        ) : null}
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell
+                                    sx={{ fontWeight: 600 }}
+                                    sortDirection={orderBy === "price" ? order : false}
+                                >
+                                    <TableSortLabel
+                                        active={orderBy === "price"}
+                                        direction={orderBy === "price" ? order : 'asc'}
+                                        onClick={() => { handleRequestSort("price") }}
+                                    >
+                                        Giá tiền
+                                        {orderBy === "price" ? (
                                             <Box component="span" sx={visuallyHidden}>
                                                 {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                             </Box>
@@ -286,23 +249,22 @@ export default function TableUser(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {visibleRows.map((row, index) => {
-
+                            {rows.map((row, index) => {
                                 return (
                                     <TableRow
                                         key={`row-${index}`}
                                         hover
-                                        tabIndex={-1}
                                     >
                                         <TableCell>
-                                            <Button color='info' sx={{ p: 0 }} onClick={() => { handleDetailUser(row) }}>
+                                            <Button color='info' sx={{ p: 0 }} onClick={() => { handleDetailBook(row) }}>
                                                 {row._id}
                                             </Button>
                                         </TableCell>
-                                        <TableCell >{row.fullName}</TableCell>
-                                        <TableCell >{row.email}</TableCell>
-                                        <TableCell >{row.phone}</TableCell>
-                                        <TableCell sx={{ display: "flex", gap: 2.5 }}>
+                                        <TableCell >{row.mainText}</TableCell>
+                                        <TableCell >{row.category}</TableCell>
+                                        <TableCell >{row.author}</TableCell>
+                                        <TableCell >{row.price}</TableCell>
+                                        <TableCell sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                                             <IconButton sx={{ p: 0 }} onClick={() => handleDeleteUser(row._id)}>
                                                 <DeleteOutlinedIcon color='error' />
                                             </IconButton>
@@ -337,7 +299,7 @@ export default function TableUser(props) {
                         :
                         <></>}
                 </Box>
-            </Box>
+            </Box >
         </>
 
     );
