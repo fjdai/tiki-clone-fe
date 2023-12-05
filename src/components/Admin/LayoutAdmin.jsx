@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -363,6 +363,7 @@ const LayoutAdmin = () => {
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
                     }}
+                    onClick={() => navigate("/admin/book")}
                   >
                     <ListItemIcon
                       sx={{
