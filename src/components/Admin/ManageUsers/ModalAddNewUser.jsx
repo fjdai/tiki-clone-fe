@@ -38,12 +38,12 @@ export default function ModalAddNewUser(props) {
         if (res && res.data) {
             setReload(!reload);
             setToast({ open: true, type: "success" })
+            handleCancel();
         }
         else {
             setToast({ open: true, type: "error", message: res.message })
 
         }
-        handleCancel();
     }
 
     const handleCancel = () => {

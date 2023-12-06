@@ -27,6 +27,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { callListBook } from "../../../services/apiAdmin/apiManageBooks";
 import moment from "moment-timezone";
+import ModalAddNewBook from "./ModalAddNewBook";
 
 export default function BookTable(props) {
     const { currentPage, setCurrentPage,
@@ -39,9 +40,13 @@ export default function BookTable(props) {
     const [rows, setRows] = useState([]);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState("mainText");
-    const [openDetailBook, setOpenDetailBook] = useState(false);
 
+    const [openDetailBook, setOpenDetailBook] = useState(false);
     const [currentBook, setCurrentBook] = useState({});
+
+    const [reload, setReload] = useState(false);
+
+    const [openModalAddNewBook, setOpenModalAddNewBook] = useState(false);
 
     const [toast, setToast] = useState({
         open: false,
@@ -68,10 +73,9 @@ export default function BookTable(props) {
 
     useEffect(() => {
         fetchListBooks();
-    }, [order, orderBy, currentPage, rowsPerPage, book])
+    }, [order, orderBy, currentPage, rowsPerPage, book, reload])
 
     const handleRequestSort = (property) => {
-        console.log(property);
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -89,7 +93,7 @@ export default function BookTable(props) {
 
     const handleReloadTable = async () => {
         setOrder("asc");
-        setOrderBy("updatedAt")
+        setOrderBy("mainText")
         setRowsPerPage(5)
         setCurrentPage(0);
         setBook({
@@ -99,10 +103,9 @@ export default function BookTable(props) {
         })
     }
 
-    // const handleAddNewUser = () => {
-    //     setOpenModalAddNewUser(true);
-    // }
-
+    const handleAddNewBook = () => {
+        setOpenModalAddNewBook(true);
+    }
 
 
     // const handleExportUser = () => {
@@ -135,11 +138,23 @@ export default function BookTable(props) {
         setOpenModalUpdateUser(true);
     }
 
+    const formatPrice = value => {
+        return `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
     return (
         <>
-            <Box sx={{ width: '100%' }}>
-                <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
 
+            <ModalAddNewBook
+                open={openModalAddNewBook}
+                setOpen={setOpenModalAddNewBook}
+                reload={reload}
+                setReload={setReload}
+            />
+
+            <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
+
+            <Box sx={{ width: '100%' }}>
                 <TableContainer component={Paper}>
                     <Box sx={{ display: "flex", justifyContent: 'space-between', p: 2, borderBottom: 1 }}>
                         <Typography variant='h5'>Table List Books</Typography>
@@ -147,7 +162,7 @@ export default function BookTable(props) {
                             <Button variant="contained" color='primary'>
                                 <ExitToAppOutlinedIcon sx={{ mr: 1 }} />
                                 Export</Button>
-                            <Button variant="contained" color='primary'>
+                            <Button onClick={() => handleAddNewBook()} variant="contained" color='primary'>
                                 <AddOutlinedIcon sx={{ mr: 1 }} />
                                 Thêm mới</Button>
                             <IconButton onClick={handleReloadTable} color='primary' sx={{ mr: 3 }}>
@@ -263,12 +278,12 @@ export default function BookTable(props) {
                                         <TableCell >{row.mainText}</TableCell>
                                         <TableCell >{row.category}</TableCell>
                                         <TableCell >{row.author}</TableCell>
-                                        <TableCell >{row.price}</TableCell>
-                                        <TableCell sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                                            <IconButton sx={{ p: 0 }} onClick={() => handleDeleteUser(row._id)}>
+                                        <TableCell >{formatPrice(row.price)}</TableCell>
+                                        <TableCell >
+                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleDeleteUser(row._id)}>
                                                 <DeleteOutlinedIcon color='error' />
                                             </IconButton>
-                                            <IconButton sx={{ p: 0 }} onClick={() => handleUpdateUser(row)}>
+                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleUpdateUser(row)}>
                                                 <EditOutlinedIcon color='warning' />
                                             </IconButton>
                                         </TableCell>
@@ -300,6 +315,7 @@ export default function BookTable(props) {
                         <></>}
                 </Box>
             </Box >
+
         </>
 
     );

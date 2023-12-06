@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Box, Paper, Typography, IconButton, Button } from '@mui/material';
+import { Box, Paper, Typography, IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import templateFile from "./template.xlsx?url"
 function DragDropFileUpload({ onFileUpload }) {
@@ -56,7 +56,7 @@ function DragDropFileUpload({ onFileUpload }) {
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                 style={{ display: 'none' }}
                 id="raised-button-file"
-                multiple
+                // multiple
                 type="file"
                 onChange={handleChange}
 

@@ -32,7 +32,7 @@ const FormSearch = (props) => {
             author: "",
             category: ""
         });
-        setCurrentPage(0);
+        // setCurrentPage(0);
     }
 
     const handleSearchBook = () => {
