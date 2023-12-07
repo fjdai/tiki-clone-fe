@@ -23,6 +23,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 
+
 export default function ModalAddNewBook(props) {
     const { open, setOpen, reload, setReload } = props;
 
@@ -226,6 +227,7 @@ export default function ModalAddNewBook(props) {
                             label="Giá tiền"
                             type="text"
                             thousandSeparator=","
+                            autoComplete='off'
                             value={price}
                             onChange={handleOnChangePrice}
                             sx={{ width: "22%" }}

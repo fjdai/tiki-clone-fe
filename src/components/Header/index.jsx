@@ -216,8 +216,7 @@ const Header = () => {
                             <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
+                            placeholder="Bạn đọc gì hôm nay?"
                         />
                     </Search>
                     <Box sx={{ display: 'flex', mx: 2 }}>
