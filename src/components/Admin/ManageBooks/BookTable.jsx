@@ -22,11 +22,9 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { callDeleteUser } from "../../../services/apiAdmin/apiManageUsers";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { callListBook } from "../../../services/apiAdmin/apiManageBooks";
-import moment from "moment-timezone";
+import { callDeleteBook, callListBook } from "../../../services/apiAdmin/apiManageBooks";
 import ModalAddNewBook from "./ModalAddNewBook";
 import ModalUpdateBook from "./ModalUpdateBook";
 
@@ -95,11 +93,11 @@ export default function BookTable(props) {
         setOpenDetailBook(true);
     }
 
-    const handleReloadTable = async () => {
+    const handleReloadTable = () => {
         setOrder("asc");
         setOrderBy("mainText")
-        setRowsPerPage(5)
-        setCurrentPage(0);
+        setRowsPerPage(0)
+        setCurrentPage(value);
         setBook({
             mainText: "",
             author: "",
@@ -111,15 +109,15 @@ export default function BookTable(props) {
         setOpenModalAddNewBook(true);
     }
 
-    const handleDeleteUser = async (id) => {
-        const res = await callDeleteUser(id);
+    const handleDeleteBook = async (id) => {
+        const res = await callDeleteBook(id);
         if (res && res.data) {
             handleReloadTable();
-            setReload(!reload);
-            openToast("success", "Xóa người dùng thành công")
+            setReload(!reload)
+            openToast("success", "Xóa sách thành công")
         }
         else {
-            openToast("error", "Không thể xóa người dùng này")
+            openToast("error", "Không thể xóa sách này")
         }
     }
 
@@ -134,6 +132,15 @@ export default function BookTable(props) {
 
     const formatPrice = value => {
         return `${value}đ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    const handleExportBook = () => {
+        if (rows.length > 0) {
+            const worksheet = XLSX.utils.json_to_sheet(rows);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+            XLSX.writeFile(workbook, "ExportBook.csv");
+        }
     }
 
     return (
@@ -162,7 +169,7 @@ export default function BookTable(props) {
                     <Box sx={{ display: "flex", justifyContent: 'space-between', p: 2, borderBottom: 1 }}>
                         <Typography variant='h5'>Table List Books</Typography>
                         <Box sx={{ display: "flex", gap: 3 }}>
-                            <Button variant="contained" color='primary'>
+                            <Button onClick={() => handleExportBook()} variant="contained" color='primary'>
                                 <ExitToAppOutlinedIcon sx={{ mr: 1 }} />
                                 Export</Button>
                             <Button onClick={() => handleAddNewBook()} variant="contained" color='primary'>
@@ -283,7 +290,7 @@ export default function BookTable(props) {
                                         <TableCell >{row.author}</TableCell>
                                         <TableCell >{formatPrice(row.price)}</TableCell>
                                         <TableCell >
-                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleDeleteUser(row._id)}>
+                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleDeleteBook(row._id)}>
                                                 <DeleteOutlinedIcon color='error' />
                                             </IconButton>
                                             <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleUpdateBook(row)}>
@@ -318,6 +325,12 @@ export default function BookTable(props) {
                         <></>}
                 </Box>
             </Box >
+
+            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
+                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
+                    {toast.message}
+                </Alert>
+            </Snackbar >
 
         </>
 

@@ -36,3 +36,7 @@ export const callCreateNewBook = (data) => {
 export const callUpdateBook = (id, data) => {
     return axios.put(`/api/v1/book/${id}`, data);
 }
+
+export const callDeleteBook = (id) => {
+    return axios.delete(`/api/v1/book/${id}`);
+}
