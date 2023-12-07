@@ -1,16 +1,16 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Box, Paper, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-function FileUpload(props) {
-    const { onFileUpload } = props;
+function MultiFileUpdate(props) {
+    const { onMultiFileUpload } = props;
     const handleChange = useCallback(
         (event) => {
-            if (event.target.files && event.target.files[0]) {
-                onFileUpload(event.target.files[0]);
+            if (event.target.files) {
+                onMultiFileUpload(event.target.files);
                 event.target.value = null;
             }
         },
-        [onFileUpload]
+        [onMultiFileUpload]
     );
 
     return (
@@ -33,13 +33,13 @@ function FileUpload(props) {
             <input
                 accept="image/*"
                 style={{ display: 'none' }}
-                id="raised-button-file"
+                id="raised-multi-update-file"
                 type="file"
-                multiple={false}
+                multiple
                 onChange={handleChange}
 
             />
-            <label htmlFor="raised-button-file">
+            <label htmlFor="raised-multi-update-file">
                 <Box display="flex" flexDirection="column" alignItems="center">
                     <IconButton color="primary" component="span">
                         <AddIcon style={{ fontSize: 35 }} />
@@ -51,4 +51,4 @@ function FileUpload(props) {
     );
 }
 
-export default FileUpload;
+export default MultiFileUpdate;

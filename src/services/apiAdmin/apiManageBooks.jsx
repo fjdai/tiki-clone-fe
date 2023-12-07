@@ -24,11 +24,15 @@ export const callUploadBookImg = (fileImg) => {
 }
 
 
-export const callDeleteBookImg = () => {
-    return axios.post("/api/v1/file/delete-image");
+export const callDeleteBookImg = (id, name, type) => {
+    return axios.post("/api/v1/file/delete-image", { id, name, type });
 }
 
 
 export const callCreateNewBook = (data) => {
     return axios.post("/api/v1/book", data);
+}
+
+export const callUpdateBook = (id, data) => {
+    return axios.put(`/api/v1/book/${id}`, data);
 }

@@ -209,7 +209,7 @@ const LayoutAdmin = () => {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography variant="h5" noWrap component="div">
+                <Typography variant="h5" noWrap component="div" onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
                   BuyBook
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />

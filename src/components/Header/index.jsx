@@ -206,7 +206,8 @@ const Header = () => {
                         variant="h5"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: "none", sm: "none", md: 'block' }, ml: { md: 3, lg: 4, xl: 6 } }}
+                        sx={{ display: { xs: "none", sm: "none", md: 'block' }, ml: { md: 3, lg: 4, xl: 6 }, cursor: "pointer" }}
+                        onClick={() => navigate("/")}
                     >
                         BuyBook
                     </Typography>

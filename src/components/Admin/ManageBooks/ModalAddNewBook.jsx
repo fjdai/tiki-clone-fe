@@ -238,7 +238,6 @@ export default function ModalAddNewBook(props) {
                         <TextField
                             select
                             required
-
                             sx={{ width: "22%" }}
                             label="Thể loại"
                             value={category}

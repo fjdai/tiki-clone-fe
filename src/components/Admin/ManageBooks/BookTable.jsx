@@ -28,6 +28,7 @@ import Alert from '@mui/material/Alert';
 import { callListBook } from "../../../services/apiAdmin/apiManageBooks";
 import moment from "moment-timezone";
 import ModalAddNewBook from "./ModalAddNewBook";
+import ModalUpdateBook from "./ModalUpdateBook";
 
 export default function BookTable(props) {
     const { currentPage, setCurrentPage,
@@ -47,6 +48,9 @@ export default function BookTable(props) {
     const [reload, setReload] = useState(false);
 
     const [openModalAddNewBook, setOpenModalAddNewBook] = useState(false);
+
+    const [openModalUpdateBook, setOpenModalUpdateBook] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState({})
 
     const [toast, setToast] = useState({
         open: false,
@@ -107,16 +111,6 @@ export default function BookTable(props) {
         setOpenModalAddNewBook(true);
     }
 
-
-    // const handleExportUser = () => {
-    //     if (listUsers.length > 0) {
-    //         const worksheet = XLSX.utils.json_to_sheet(listUsers);
-    //         const workbook = XLSX.utils.book_new();
-    //         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    //         XLSX.writeFile(workbook, "ExportUser.csv");
-    //     }
-    // }
-
     const handleDeleteUser = async (id) => {
         const res = await callDeleteUser(id);
         if (res && res.data) {
@@ -133,9 +127,9 @@ export default function BookTable(props) {
         setToast({ open: true, type: type, message, message })
     }
 
-    const handleUpdateUser = (value) => {
-        setUser(value);
-        setOpenModalUpdateUser(true);
+    const handleUpdateBook = (value) => {
+        setDataUpdate(value);
+        setOpenModalUpdateBook(true)
     }
 
     const formatPrice = value => {
@@ -150,6 +144,15 @@ export default function BookTable(props) {
                 setOpen={setOpenModalAddNewBook}
                 reload={reload}
                 setReload={setReload}
+            />
+
+            <ModalUpdateBook
+                open={openModalUpdateBook}
+                setOpen={setOpenModalUpdateBook}
+                reload={reload}
+                setReload={setReload}
+                data={dataUpdate}
+                setData={setDataUpdate}
             />
 
             <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
@@ -283,7 +286,7 @@ export default function BookTable(props) {
                                             <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleDeleteUser(row._id)}>
                                                 <DeleteOutlinedIcon color='error' />
                                             </IconButton>
-                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleUpdateUser(row)}>
+                                            <IconButton sx={{ p: 0, m: 0.5 }} onClick={() => handleUpdateBook(row)}>
                                                 <EditOutlinedIcon color='warning' />
                                             </IconButton>
                                         </TableCell>

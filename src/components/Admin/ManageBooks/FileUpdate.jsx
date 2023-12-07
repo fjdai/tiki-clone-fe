@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Box, Paper, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-function FileUpload(props) {
+function FileUpdate(props) {
     const { onFileUpload } = props;
     const handleChange = useCallback(
         (event) => {
@@ -33,13 +33,13 @@ function FileUpload(props) {
             <input
                 accept="image/*"
                 style={{ display: 'none' }}
-                id="raised-button-file"
+                id="raised-Update-file"
                 type="file"
                 multiple={false}
                 onChange={handleChange}
 
             />
-            <label htmlFor="raised-button-file">
+            <label htmlFor="raised-Update-file">
                 <Box display="flex" flexDirection="column" alignItems="center">
                     <IconButton color="primary" component="span">
                         <AddIcon style={{ fontSize: 35 }} />
@@ -51,4 +51,4 @@ function FileUpload(props) {
     );
 }
 
-export default FileUpload;
+export default FileUpdate;
