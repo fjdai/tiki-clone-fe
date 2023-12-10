@@ -13,8 +13,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { callRegister } from '../../services/apiAuth';
 import CircularProgress from '@mui/material/CircularProgress';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { toast } from 'react-toastify';
 
 
 export default function RegisterPage() {
@@ -30,10 +29,6 @@ export default function RegisterPage() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success"
-    });
 
     const navigate = useNavigate();
 
@@ -43,9 +38,17 @@ export default function RegisterPage() {
         const res = await callRegister(user.fullName, user.email, user.password, user.phone);
         setIsLoading(false);
         if (res?.data?._id) {
-            navigate("/login", { state: { ...toast, open: true, type: "success" } })
+            navigate("/login")
+            toast.success("Đăng kí thành công")
         } else {
-            setToast({ ...toast, open: true, type: "error", message: [Array.isArray(res.message) ? res.message[0] : res.message] });
+            if (Array.isArray(res.message)) {
+                toast.error(`${res.message[0]}`)
+            }
+            else {
+                toast.error(`${res.message}`)
+
+            }
+
         };
     }
 
@@ -164,11 +167,6 @@ export default function RegisterPage() {
                     </Box>
                 </Grid>
             </Grid >
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '150%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>Đăng ký tài khoản thành công!</>}
-                </Alert>
-            </Snackbar >
         </>
     );
 }

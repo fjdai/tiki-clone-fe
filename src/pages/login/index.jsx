@@ -11,12 +11,11 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import { callLogin } from '../../services/apiAuth';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch } from 'react-redux';
 import { doLoginAction } from '../../redux/account/accountSlice';
+import { toast } from 'react-toastify';
 
 
 export default function LoginPage() {
@@ -25,10 +24,6 @@ export default function LoginPage() {
         username: "",
         password: "",
     })
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success"
-    });
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -45,9 +40,10 @@ export default function LoginPage() {
         if (res && res.data) {
             localStorage.setItem("access_token", res.data.access_token);
             dispatch(doLoginAction(res?.data?.user))
-            navigate("/", { state: "login" })
+            navigate("/");
+            toast.success(`Đăng nhập thành công`)
         } else {
-            setToast({ ...toast, open: true, type: "error", message: [res.message] });
+            toast.error(`${res.message}`)
             return;
         };
     };
@@ -135,6 +131,7 @@ export default function LoginPage() {
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
+                                disabled={isLoading}
                             >
                                 {!isLoading ? "Sign In" : <><CircularProgress sx={{ ml: -2.5, mr: 0.5 }} size="1rem" color="inherit" />Sign In</>}
 
@@ -153,10 +150,6 @@ export default function LoginPage() {
                     </Box>
                 </Grid>
             </Grid >
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '150%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>Đăng ký tài khoản thành công!</>}
-                </Alert>
-            </Snackbar ></>
+        </>
     );
 }

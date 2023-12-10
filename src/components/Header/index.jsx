@@ -24,8 +24,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
 import { callLogout } from '../../services/apiAuth';
 import { doLogoutAction } from '../../redux/account/accountSlice';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import { toast } from 'react-toastify';
+import { Popover } from '@mui/material';
 
 
 const drawerWidth = 240;
@@ -107,29 +107,36 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorElMenu, setAnchorElMenu] = useState(null);
+    const [anchorElOrder, setAnchorElOrder] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [toast, setToast] = useState(false);
-    const [message, setMessage] = useState("logout");
 
-    const isMenuOpen = Boolean(anchorEl);
+    const isMenuOpen = Boolean(anchorElMenu);
+    const isPopoverOpen = Boolean(anchorElOrder);
 
-    const handleProfileMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleAnchorOpen = (event) => {
+        setAnchorElMenu(event.currentTarget);
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleAnchorClose = () => {
+        setAnchorElMenu(null);
+    };
+
+    const handleOrderOpen = (event) => {
+        setAnchorElOrder(event.currentTarget);
+    };
+
+    const handleOrderClose = () => {
+        setAnchorElOrder(null);
     };
 
     const handleLogout = async () => {
         let res = await callLogout();
         if (res && res.data) {
             dispatch(doLogoutAction());
-            setAnchorEl(null);
-            setMessage("logout")
-            setToast(true);
+            setAnchorElMenu(null);
             navigate("/");
+            toast.success("Đăng xuất thành công")
         }
     }
 
@@ -139,19 +146,18 @@ const Header = () => {
             {role === "ADMIN" ?
                 <Menu
                     sx={{ mt: '45px' }}
-                    anchorEl={anchorEl}
+                    anchorElMenu={anchorElMenu}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}
-                    // id={menuId}
                     keepMounted
                     transformOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}
                     open={isMenuOpen}
-                    onClose={handleMenuClose}
+                    onClose={handleAnchorClose}
                 >
                     <MenuItem onClick={() => navigate("/admin")}>Trang quản trị</MenuItem>
                     <MenuItem onClick={() => alert("me")}>Quản lí tài khoản</MenuItem>
@@ -161,24 +167,47 @@ const Header = () => {
                 :
                 <Menu
                     sx={{ mt: '45px' }}
-                    anchorEl={anchorEl}
+                    anchorElMenu={anchorElMenu}
                     anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}
-                    // id={menuId}
                     keepMounted
                     transformOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}
                     open={isMenuOpen}
-                    onClose={handleMenuClose}
+                    onClose={handleAnchorClose}
                 >
                     <MenuItem onClick={() => alert("me")}>Quản lí tài khoản</MenuItem>
                     <MenuItem onClick={handleLogout}>Log Out</MenuItem>
                 </Menu >
             }</>
+
+    );
+
+    const renderPopover = (
+        <>
+            <Popover
+                open={isPopoverOpen}
+                anchorEl={anchorElOrder}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                onClose={handleOrderClose}
+                disableRestoreFocus
+            >
+                <Typography>
+                    abc
+                </Typography>
+            </Popover>
+        </>
 
     );
 
@@ -219,10 +248,14 @@ const Header = () => {
                             placeholder="Bạn đọc gì hôm nay?"
                         />
                     </Search>
-                    <Box sx={{ display: 'flex', mx: 2 }}>
+                    <Box sx={{ display: 'flex', mx: 2.5 }}>
                         <IconButton
                             size="large"
                             color="inherit"
+                            // onClick={handleOrderOpen}
+                            onMouseEnter={handleOrderOpen}
+                            // onMouseLeave={handleOrderClose}
+                            sx={{ p: 0 }}
                         >
                             <Badge badgeContent={5} color="error">
                                 <ShoppingCartOutlinedIcon />
@@ -234,9 +267,10 @@ const Header = () => {
                             <Box sx={{ display: { xs: 'none', sm: "none", md: 'flex' } }}>
                                 <IconButton
                                     size="large"
-                                    edge="end"
-                                    onClick={handleProfileMenuOpen}
+                                    onClick={handleAnchorOpen}
                                     color="inherit"
+                                    sx={{ p: 0, m: 2, }}
+
                                 >
                                     <Avatar sx={{ backgroundColor: "#fff" }} src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${avt}`} />
 
@@ -258,9 +292,10 @@ const Header = () => {
                         </>
                     }
                 </Toolbar>
-            </AppBar>
+            </AppBar >
             {renderMenu}
-            <Drawer
+            {renderPopover}
+            <Drawer Drawer
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
@@ -268,7 +303,8 @@ const Header = () => {
                         width: drawerWidth,
                         boxSizing: 'border-box',
                     },
-                }}
+                }
+                }
                 variant="persistent"
                 anchor="left"
                 open={isDrawerOpen}
@@ -333,11 +369,6 @@ const Header = () => {
                     }
                 </List>
             </Drawer >
-            <Snackbar open={toast} autoHideDuration={2500} onClose={() => { setToast(false) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast(false) }} severity={"success"} sx={{ width: '150%' }}>
-                    {message === "logout" ? <>Đăng xuất thành công </> : <>Đăng nhập thành công</>}
-                </Alert>
-            </Snackbar >
         </>
     );
 }

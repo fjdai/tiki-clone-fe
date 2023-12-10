@@ -1,11 +1,10 @@
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { callDetailBookById } from "../../services/apiNormalUser/apiBook";
 import { useEffect, useState } from "react";
 import DetailBook from "../../components/DetailBookId";
 
 const BookPage = () => {
     const location = useLocation();
-    console.log(location);
     let params = new URLSearchParams(location.search)
     const id = params.get('id');
 
