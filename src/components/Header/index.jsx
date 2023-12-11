@@ -110,6 +110,7 @@ const Header = () => {
     const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [anchorElOrder, setAnchorElOrder] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isClickPopover, setIsClickPopover] = useState("none")
 
     const isMenuOpen = Boolean(anchorElMenu);
     const isPopoverOpen = Boolean(anchorElOrder);
@@ -200,12 +201,13 @@ const Header = () => {
                     vertical: 'top',
                     horizontal: 'left',
                 }}
-                onClose={handleOrderClose}
+                onClose={() => { setIsClickPopover("none"); handleOrderClose(); }}
+                sx={{ pointerEvents: isClickPopover, }}
                 disableRestoreFocus
             >
-                <Typography>
-                    abc
-                </Typography>
+                <Box sx={{ height: 400, width: 400 }}>
+
+                </Box>
             </Popover>
         </>
 
@@ -250,11 +252,10 @@ const Header = () => {
                     </Search>
                     <Box sx={{ display: 'flex', mx: 2.5 }}>
                         <IconButton
-                            size="large"
                             color="inherit"
-                            // onClick={handleOrderOpen}
-                            onMouseEnter={handleOrderOpen}
-                            // onMouseLeave={handleOrderClose}
+                            onClick={(e) => { setIsClickPopover("auto"); handleOrderOpen(e); }}
+                            onPointerEnter={handleOrderOpen}
+                            onPointerLeave={() => { if (isClickPopover === "none") { handleOrderClose() } }}
                             sx={{ p: 0 }}
                         >
                             <Badge badgeContent={5} color="error">
