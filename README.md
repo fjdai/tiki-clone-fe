@@ -1,4 +1,4 @@
 # TIKI CLONE
 
-npm: "8.1.2"\n
-node: "16.13.1"
+<p>npm: "8.1.2"</p>
+<p>node: "16.13.1"</p>
