@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -7,11 +7,9 @@ import TextField from '@mui/material/TextField';
 import { Divider } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import { NumericFormat } from 'react-number-format';
 import MenuItem from '@mui/material/MenuItem';
-import { callBookCategory, callCreateNewBook, callUploadBookImg } from '../../../services/apiAdmin/apiManageBooks';
+import { callCreateNewBook, callUploadBookImg } from '../../../services/apiAdmin/apiManageBooks';
 import FileUpload from './FileUpload';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -19,15 +17,15 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import Clear from '@mui/icons-material/Clear';
 import MultiFileUpload from './MultiFileUpload';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-toastify';
 
 
 
 
 
 export default function ModalAddNewBook(props) {
-    const { open, setOpen, reload, setReload } = props;
+    const { open, setOpen, reload, setReload, listCategory } = props;
 
-    const [listCategory, setListCategory] = useState([]);
     const [category, setCategory] = useState("");
     const [mainText, setMainText] = useState("");
     const [author, setAuthor] = useState("");
@@ -44,17 +42,6 @@ export default function ModalAddNewBook(props) {
     const [imagePreview, setImagePreview] = useState("");
 
 
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success"
-    });
-
-    const fetchCategory = async () => {
-        const res = await callBookCategory();
-        if (res && res.data) {
-            setListCategory(res.data);
-        }
-    }
 
     const handleCancel = () => {
         setOpen(false);
@@ -74,12 +61,12 @@ export default function ModalAddNewBook(props) {
     const handleOnSubmit = async () => {
         const res = await callCreateNewBook({ thumbnail, slider: slider.map(e => { return e.severImg }), mainText, author, price: +price, sold: +sold, quantity: +quantity, category })
         if (res && res.data) {
-            setToast({ ...toast, open: true });
+            toast.success("Thêm mới sách thành công!")
             setReload(!reload);
             handleCancel();
         }
         else {
-            setToast({ open: true, type: "error", message: res.message[0] })
+            toast.error(res.message[0])
 
         }
     }
@@ -150,9 +137,7 @@ export default function ModalAddNewBook(props) {
         setMainText(event.target.value);
     }
 
-    useEffect(() => {
-        fetchCategory();
-    }, [])
+
 
     return (
         <>
@@ -438,11 +423,6 @@ export default function ModalAddNewBook(props) {
                     </Box>
                 </Box >
             </Modal >
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>Thêm mới sách thành công!</>}
-                </Alert>
-            </Snackbar >
         </ >
     );
 }

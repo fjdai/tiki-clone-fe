@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { styled, alpha, useTheme } from '@mui/material/styles';
+import { useState } from 'react';
+import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,7 +16,7 @@ import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -42,15 +42,15 @@ const Search = styled('div')(({ theme }) => ({
     width: '100%',
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(2),
-        width: '100%',
+        width: '90%',
     },
     [theme.breakpoints.up('md')]: {
         marginLeft: theme.spacing(5),
-        width: '63%',
+        width: '55%',
     },
-    [theme.breakpoints.up('xl')]: {
+    [theme.breakpoints.up('lg')]: {
         marginLeft: theme.spacing(10),
-        width: 'auto',
+        width: '60%',
     },
 }));
 
@@ -97,15 +97,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const Header = () => {
-    window.history.replaceState({}, document.title)
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated);
     const user = useSelector(state => state.account.user);
     const role = user.role;
+    const userName = user.fullName;
     const avt = useSelector(state => state.account.user?.avatar);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const location = useLocation();
 
     const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [anchorElOrder, setAnchorElOrder] = useState(null);
@@ -213,13 +212,6 @@ const Header = () => {
 
     );
 
-    useEffect(() => {
-        if (location.state !== null) {
-            setMessage(location.state);
-            setToast(true);
-        }
-    }, [])
-
     return (
         <>
             <AppBar position="static">
@@ -233,15 +225,18 @@ const Header = () => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: "none", sm: "none", md: 'block' }, ml: { md: 3, lg: 4, xl: 6 }, cursor: "pointer" }}
-                        onClick={() => navigate("/")}
-                    >
-                        BuyBook
-                    </Typography>
+                    <Box flexGrow={1}></Box>
+                    <Box>
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="div"
+                            sx={{ display: { xs: "none", sm: "none", md: 'block' }, cursor: "pointer" }}
+                            onClick={() => navigate("/")}
+                        >
+                            BuyBook
+                        </Typography>
+                    </Box>
                     <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
@@ -250,6 +245,7 @@ const Header = () => {
                             placeholder="Bạn đọc gì hôm nay?"
                         />
                     </Search>
+                    <Box flexGrow={{ xs: 0, md: 2 }}></Box>
                     <Box sx={{ display: 'flex', mx: 2.5 }}>
                         <IconButton
                             color="inherit"
@@ -265,10 +261,9 @@ const Header = () => {
                     </Box>
                     {isAuthenticated ?
                         <>
-                            <Box sx={{ display: { xs: 'none', sm: "none", md: 'flex' } }}>
+                            <Box onClick={handleAnchorOpen} sx={{ display: { xs: 'none', sm: "none", md: 'flex', alignItems: "center", cursor: "pointer" } }}>
                                 <IconButton
                                     size="large"
-                                    onClick={handleAnchorOpen}
                                     color="inherit"
                                     sx={{ p: 0, m: 2, }}
 
@@ -276,6 +271,9 @@ const Header = () => {
                                     <Avatar sx={{ backgroundColor: "#fff" }} src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${avt}`} />
 
                                 </IconButton>
+                                <Box>
+                                    <Typography>{userName}</Typography>
+                                </Box>
                             </Box>
                         </>
                         :
@@ -292,6 +290,7 @@ const Header = () => {
                             </Box>
                         </>
                     }
+                    <Box flexGrow={{ xs: 0, md: 1 }}></Box>
                 </Toolbar>
             </AppBar >
             {renderMenu}

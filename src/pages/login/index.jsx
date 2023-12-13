@@ -19,7 +19,6 @@ import { toast } from 'react-toastify';
 
 
 export default function LoginPage() {
-    window.history.replaceState({}, document.title)
     const [user, setUser] = useState({
         username: "",
         password: "",
@@ -54,14 +53,6 @@ export default function LoginPage() {
             [event.target.name]: event.target.value
         });
     }
-
-
-
-    useEffect(() => {
-        if (location.state !== null) {
-            setToast(location.state)
-        }
-    }, [])
 
     return (
         <>
@@ -119,7 +110,7 @@ export default function LoginPage() {
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position='end'>
-                                            <IconButton onMouseDown={() => setShowPassword(!showPassword)}>
+                                            <IconButton sx={{ color: 'text.secondary' }} onMouseDown={() => setShowPassword(!showPassword)}>
                                                 {showPassword ? <Visibility /> : <VisibilityOff />}
                                             </IconButton>
                                         </InputAdornment>

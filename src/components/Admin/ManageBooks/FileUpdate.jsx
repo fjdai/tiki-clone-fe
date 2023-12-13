@@ -25,7 +25,6 @@ function FileUpdate(props) {
                 borderRadius: 15,
                 textAlign: 'center',
                 cursor: 'pointer',
-                background: '#fafafa',
                 alignItems: "center",
                 justifyContent: "center"
             }}

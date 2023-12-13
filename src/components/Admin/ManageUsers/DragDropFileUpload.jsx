@@ -49,7 +49,6 @@ function DragDropFileUpload({ onFileUpload }) {
                 padding: 20,
                 textAlign: 'center',
                 cursor: 'pointer',
-                background: dragOver ? '#eee' : '#fafafa',
             }}
         >
             <input
@@ -63,11 +62,11 @@ function DragDropFileUpload({ onFileUpload }) {
             />
             <label htmlFor="raised-button-file">
                 <Box display="flex" flexDirection="column" alignItems="center">
-                    <IconButton color="primary" aria-label="upload picture" component="span">
+                    <IconButton color="primary" component="span">
                         <CloudUploadIcon style={{ fontSize: 60 }} />
                     </IconButton>
                     <Typography variant='h5'>Drag and drop files here or click to select files</Typography>
-                    <Typography sx={{ color: "#808080" }}>Support for a single upload. Only accept .csv, .xls, .xlsx or <a style={{ textDecoration: "none" }} download onClick={e => e.stopPropagation()} href={templateFile} >Download Sample File</a></Typography>
+                    <Typography sx={{ color: "#808080" }}>Support for a single upload. Only accept .csv, .xls, .xlsx or <a style={{ textDecoration: "none", color: "red" }} download onClick={e => e.stopPropagation()} href={templateFile} >Download Sample File</a></Typography>
 
                 </Box>
             </label>

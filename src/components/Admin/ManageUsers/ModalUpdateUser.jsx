@@ -5,19 +5,20 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { Divider } from '@mui/material';
 import { callUpdateUser } from '../../../services/apiAdmin/apiManageUsers';
+import { toast } from 'react-toastify';
 
 export default function ModalUpdateUser(props) {
-    const { open, setOpen, reload, setReload, toast, openToast, setToast, user, setUser } = props;
+    const { open, setOpen, reload, setReload, user, setUser } = props;
 
     const handleOnSubmit = async () => {
         const res = await callUpdateUser(user._id, user.fullName, user.phone)
         if (res && res.data) {
             setReload(!reload);
-            openToast("success", "Updated success");
+            toast.success("Updated success")
             handleCancel();
         }
         else {
-            openToast("erorr", `${res.message}`);
+            toast.error(`${res.message}`);
             handleCancel();
         }
     }

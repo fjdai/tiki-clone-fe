@@ -26,8 +26,6 @@ import ModalAddNewUser from './ModalAddNewUser';
 import ModalUploadFile from './ModalUploadFile';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { callDeleteUser } from "../../../services/apiAdmin/apiManageUsers";
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import ModalUpdateUser from "./ModalUpdateUser";
 
 function descendingComparator(a, b, orderBy) {
@@ -155,16 +153,8 @@ export default function TableUser(props) {
 
     return (
         <>
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.message}
-                </Alert>
-            </Snackbar >
             <Box sx={{ width: '100%' }}>
                 <ModalUploadFile
-                    toast={toast}
-                    setToast={setToast}
-                    openToast={openToast}
                     open={openModalUploadFile}
                     setOpen={setOpenModalUploadFile}
                     reload={reload}
@@ -178,9 +168,6 @@ export default function TableUser(props) {
                 />
 
                 <ModalUpdateUser
-                    toast={toast}
-                    setToast={setToast}
-                    openToast={openToast}
                     open={openModalUpdateUser}
                     setOpen={setOpenModalUpdateUser}
                     reload={reload}
@@ -204,7 +191,7 @@ export default function TableUser(props) {
                             <Button onClick={handleAddNewUser} variant="contained" color='primary'>
                                 <AddOutlinedIcon sx={{ mr: 1 }} />
                                 Thêm mới</Button>
-                            <IconButton onClick={handleReloadTable} color='primary' sx={{ mr: 3 }}>
+                            <IconButton onClick={handleReloadTable} sx={{ color: 'text.icon', mr: 3 }} >
                                 <RefreshIcon />
                             </IconButton>
                         </Box>

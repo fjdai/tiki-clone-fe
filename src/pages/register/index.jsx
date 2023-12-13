@@ -126,7 +126,7 @@ export default function RegisterPage() {
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position='end'>
-                                            <IconButton onMouseDown={() => setShowPassword(!showPassword)}>
+                                            <IconButton sx={{ color: 'text.secondary' }} onMouseDown={() => setShowPassword(!showPassword)}>
                                                 {showPassword ? <Visibility /> : <VisibilityOff />}
                                             </IconButton>
                                         </InputAdornment>

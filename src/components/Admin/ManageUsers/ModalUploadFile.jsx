@@ -18,12 +18,13 @@ import Alert from '@mui/material/Alert';
 import DragDropFileUpload from './DragDropFileUpload';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
+import { toast } from "react-toastify";
 
 
 
 
 export default function ModalUploadFile(props) {
-    const { open, setOpen, toast, openToast, setToast, reload, setReload } = props;
+    const { open, setOpen, reload, setReload } = props;
 
     const [fileName, setFileName] = useState(null);
     const [rows, setRows] = useState([]);
@@ -34,7 +35,9 @@ export default function ModalUploadFile(props) {
         const workbook = XLSX.read(data);
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         const raw_data = XLSX.utils.sheet_to_json(worksheet);
-        openToast("success", "File uploaded successfully");
+        if (raw_data) {
+            toast.success("Upload file thành công")
+        }
         setFileName(file.name);
         setRows(raw_data);
     };
@@ -59,11 +62,11 @@ export default function ModalUploadFile(props) {
         const res = await callBulkCreateUser(data);
         if (res && res.data) {
             setReload(!reload);
-            openToast("success", `Upload thành công. Success: ${res.data.countSuccess}, Erorr: ${res.data.countError} `);
+            toast.success(`Upload thành công. Success: ${res.data.countSuccess}, Erorr: ${res.data.countError} `);
             handleClose();
         }
         else {
-            openToast("error", `Có lỗi xảy ra!`);
+            toast.error("Có lỗi xảy ra");
         }
     }
 
@@ -93,7 +96,7 @@ export default function ModalUploadFile(props) {
                             <Box sx={{ display: "flex", m: 2 }}>
                                 <AttachFileIcon />  <Typography >{fileName}</Typography>
                             </Box>
-                            <IconButton onClick={handleDeleteFile} sx={{ mr: 1 }}>
+                            <IconButton sx={{ color: "text.icon", mr: 1 }} onClick={handleDeleteFile} >
                                 <DeleteOutlinedIcon />
                             </IconButton>
                         </Box>
@@ -152,11 +155,6 @@ export default function ModalUploadFile(props) {
                     </Box>
                 </Box >
             </Modal>
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>{toast.message}</>}
-                </Alert>
-            </Snackbar >
         </ >
     );
 }

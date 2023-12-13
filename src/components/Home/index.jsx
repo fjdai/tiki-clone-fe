@@ -200,7 +200,7 @@ const Home = () => {
                             <FilterAltOutlinedIcon />
                             <Typography variant="body1">Bộ lọc tìm kiếm</Typography>
                         </Box>
-                        <IconButton onClick={handleOnCleatFilter}>
+                        <IconButton sx={{ color: "text.secondary" }} onClick={handleOnCleatFilter}>
                             <ReplayOutlinedIcon />
                         </IconButton>
                     </Box>
@@ -323,12 +323,11 @@ const Home = () => {
                         justifyContent: "space-between",
                     }}>
                     <Box
-                        component={Paper}
-                        elevation={24}
                         sx={{
                             height: "auto",
                             width: "20%",
                             minWidth: "230px",
+                            backgroundColor: "rgb(0,0,0,0.2)",
                             boxShadow: 3,
                             p: 3,
                             display: { xs: "none", sm: "none", md: "block" }
@@ -339,7 +338,7 @@ const Home = () => {
                                 <FilterAltOutlinedIcon />
                                 <Typography variant="body1">Bộ lọc tìm kiếm</Typography>
                             </Box>
-                            <IconButton onClick={handleOnCleatFilter}>
+                            <IconButton sx={{ color: "text.secondary" }} onClick={handleOnCleatFilter}>
                                 <ReplayOutlinedIcon />
                             </IconButton>
                         </Box>
@@ -422,7 +421,8 @@ const Home = () => {
                             height: "auto",
                             width: { xs: "100%", md: "69%", lg: "76%" },
                             boxShadow: { xs: "0", md: "3" },
-                            backgroundColor: { xs: "background.default", md: "background.paper" },
+                            backgroundColor: { xs: "background.default", md: "rgb(0,0,0,0.2)" },
+
                             display: "flex",
                             flexDirection: "column",
                             p: { xs: 0, sm: 2, md: 3 },
@@ -460,7 +460,7 @@ const Home = () => {
 
                                                 boxShadow: 1,
                                                 "&:hover": { boxShadow: { xs: 1, md: 5 } },
-                                                backgroundColor: "#fff",
+                                                backgroundColor: "background.paper",
                                                 justifyContent: "space-between"
                                             }}>
                                             <Box sx={{ display: "flex", flexDirection: "column" }}>

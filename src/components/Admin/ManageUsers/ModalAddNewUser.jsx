@@ -10,11 +10,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import { createUser } from '../../../services/apiAdmin/apiManageUsers';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-
-
-
+import { toast } from 'react-toastify';
 
 export default function ModalAddNewUser(props) {
     const { open, setOpen, reload, setReload } = props;
@@ -26,10 +22,7 @@ export default function ModalAddNewUser(props) {
         email: "",
         phone: ""
     });
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success"
-    });
+
 
 
     const handleOnSubmit = async (event) => {
@@ -37,11 +30,11 @@ export default function ModalAddNewUser(props) {
         const res = await createUser(user.fullName, user.password, user.email, user.phone);
         if (res && res.data) {
             setReload(!reload);
-            setToast({ open: true, type: "success" })
+            toast.success("Thêm người dùng thành công")
             handleCancel();
         }
         else {
-            setToast({ open: true, type: "error", message: res.message })
+            toast.error(res.message);
 
         }
     }
@@ -106,7 +99,7 @@ export default function ModalAddNewUser(props) {
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position='end'>
-                                        <IconButton onMouseDown={() => setShowPassword(!showPassword)}>
+                                        <IconButton sx={{ color: 'text.icon' }} onMouseDown={() => setShowPassword(!showPassword)}>
                                             {showPassword ? <Visibility /> : <VisibilityOff />}
                                         </IconButton>
                                     </InputAdornment>
@@ -147,11 +140,6 @@ export default function ModalAddNewUser(props) {
                     </Box>
                 </Box >
             </Modal>
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>Thêm mới người dùng thành công!</>}
-                </Alert>
-            </Snackbar >
         </ >
     );
 }

@@ -22,11 +22,10 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import { callDeleteBook, callListBook } from "../../../services/apiAdmin/apiManageBooks";
+import { callBookCategory, callDeleteBook, callListBook } from "../../../services/apiAdmin/apiManageBooks";
 import ModalAddNewBook from "./ModalAddNewBook";
 import ModalUpdateBook from "./ModalUpdateBook";
+import { toast } from "react-toastify";
 
 export default function BookTable(props) {
     const { currentPage, setCurrentPage,
@@ -49,12 +48,8 @@ export default function BookTable(props) {
 
     const [openModalUpdateBook, setOpenModalUpdateBook] = useState(false);
     const [dataUpdate, setDataUpdate] = useState({})
+    const [listCategory, setListCategory] = useState([]);
 
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success",
-        message: ""
-    });
 
     const fetchListBooks = async () => {
         if (order === "asc") {
@@ -76,6 +71,10 @@ export default function BookTable(props) {
     useEffect(() => {
         fetchListBooks();
     }, [order, orderBy, currentPage, rowsPerPage, book, reload])
+
+    useEffect(() => {
+        fetchCategory();
+    }, [])
 
     const handleRequestSort = (property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -114,15 +113,11 @@ export default function BookTable(props) {
         if (res && res.data) {
             handleReloadTable();
             setReload(!reload)
-            openToast("success", "Xóa sách thành công")
+            toast.success("Xóa sách thành công");
         }
         else {
-            openToast("error", "Không thể xóa sách này")
+            toast.error("Không thể xóa sách này")
         }
-    }
-
-    const openToast = (type, message,) => {
-        setToast({ open: true, type: type, message, message })
     }
 
     const handleUpdateBook = (value) => {
@@ -143,6 +138,16 @@ export default function BookTable(props) {
         }
     }
 
+    const fetchCategory = async () => {
+        const res = await callBookCategory();
+        if (res && res.data) {
+            setListCategory(res.data);
+        }
+    }
+
+
+
+
     return (
         <>
 
@@ -151,15 +156,16 @@ export default function BookTable(props) {
                 setOpen={setOpenModalAddNewBook}
                 reload={reload}
                 setReload={setReload}
+                listCategory={listCategory}
+
             />
 
             <ModalUpdateBook
                 open={openModalUpdateBook}
                 setOpen={setOpenModalUpdateBook}
-                reload={reload}
-                setReload={setReload}
                 data={dataUpdate}
                 setData={setDataUpdate}
+                listCategory={listCategory}
             />
 
             <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
@@ -175,7 +181,7 @@ export default function BookTable(props) {
                             <Button onClick={() => handleAddNewBook()} variant="contained" color='primary'>
                                 <AddOutlinedIcon sx={{ mr: 1 }} />
                                 Thêm mới</Button>
-                            <IconButton onClick={handleReloadTable} color='primary' sx={{ mr: 3 }}>
+                            <IconButton onClick={handleReloadTable} sx={{ color: 'text.icon', mr: 3 }} >
                                 <RefreshIcon />
                             </IconButton>
                         </Box>
@@ -325,12 +331,6 @@ export default function BookTable(props) {
                         <></>}
                 </Box>
             </Box >
-
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.message}
-                </Alert>
-            </Snackbar >
 
         </>
 

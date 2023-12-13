@@ -1,7 +1,10 @@
 .right-content {
     .price-container {
         padding: 15px 20px;
-        background: #f3f3f3;
+        // background: #f3f3f3;
+        // background: #efe7e7;
+        background: rgba(0, 0, 0, 0.1);
+
         .book-price {
             font-size: 2.5rem;
             font-weight: 500;
@@ -45,7 +48,8 @@
         }
         .quantity-content {
             display: flex;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.9);
+
             margin-right: 15px;
             .quantity-input {
                 outline: none;

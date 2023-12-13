@@ -47,7 +47,7 @@ const Accordion = styled((props) => (
 const AccordionSummary = styled((props) => (
   <MuiAccordionSummary
     {...props}
-    expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.5rem', }} />}
+    expandIcon={<ExpandMoreIcon sx={{ fontSize: '1.5rem', color: "text.icon" }} />}
   />
 ))(({ theme }) => ({
   flexDirection: 'row',
@@ -134,6 +134,7 @@ const LayoutAdmin = () => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
@@ -226,7 +227,7 @@ const LayoutAdmin = () => {
             {renderMenu}
             <Drawer variant="permanent" open={open}>
               <DrawerHeader>
-                <IconButton onClick={handleDrawerClose}>
+                <IconButton sx={{ color: "text.icon" }} onClick={handleDrawerClose}>
                   <ChevronLeftIcon />
                 </IconButton>
                 <Typography variant='h5' sx={{ ml: 5 }}>Admin</Typography>
@@ -239,13 +240,15 @@ const LayoutAdmin = () => {
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
                     }}
-                    onClick={() => navigate("/admin")}
+                    onClick={() => { navigate("/admin"); setSelectedIndex(0) }}
+                    selected={selectedIndex === 0}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
+                        color: "text.icon"
                       }}
                     >
                       <SpaceDashboardOutlinedIcon />
@@ -261,9 +264,10 @@ const LayoutAdmin = () => {
                           minHeight: 48,
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
+                          color: "text.icon"
                         }}
-                        onClick={() => { setExpanded(!expanded) }}
-
+                        onClick={() => { setExpanded(!expanded); setSelectedIndex(1) }}
+                        selected={selectedIndex === 1 || selectedIndex === 1.2}
                       >
                         <AccordionSummary sx={{ p: 0 }} >
                           <ListItemIcon
@@ -272,6 +276,7 @@ const LayoutAdmin = () => {
                               mr: 3,
                               justifyContent: 'center',
                               alignItems: "center",
+                              color: "text.icon"
                             }}
                           >
                             <PersonOutlineOutlinedIcon />
@@ -289,8 +294,11 @@ const LayoutAdmin = () => {
                                 minHeight: 10,
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
+                                color: "text.icon"
                               }}
-                              onClick={() => navigate("/admin/user")}
+                              onClick={() => { navigate("/admin/user"); setSelectedIndex(1) }}
+                              selected={selectedIndex === 1}
+
                             >
                               <ListItemIcon
                                 sx={{
@@ -298,7 +306,10 @@ const LayoutAdmin = () => {
                                   mr: 3,
                                   ml: 3,
                                   justifyContent: 'start',
+                                  color: "text.icon"
+
                                 }}
+
                               >
                                 <PeopleAltOutlinedIcon />
                               </ListItemIcon>
@@ -311,16 +322,22 @@ const LayoutAdmin = () => {
                                 minHeight: 10,
                                 justifyContent: 'initial',
                                 px: 2.5,
+                                color: "text.icon"
+
                               }}
-                              onClick={() => navigate("/admin/user")}
+                              onClick={() => { navigate("/admin/user"); setSelectedIndex(1.2) }}
+                              selected={selectedIndex === 1.2}
+
+
                             >
                               <ListItemIcon
                                 sx={{
                                   minWidth: 0,
                                   mr: 3,
                                   ml: 3,
-
                                   justifyContent: 'start',
+                                  color: "text.icon"
+
                                 }}
                               >
                                 <PeopleAltOutlinedIcon />
@@ -340,13 +357,19 @@ const LayoutAdmin = () => {
                           minHeight: 48,
                           justifyContent: 'center',
                           px: 2.5,
+                          color: "text.icon"
+
                         }}
-                        onClick={() => { navigate("/admin/user") }}
+                        onClick={() => { navigate("/admin/user"); setSelectedIndex(1) }}
+                        selected={selectedIndex === 1}
+
                       >
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
                             justifyContent: 'center',
+                            color: "text.icon"
+
                           }}
                         >
                           <PersonOutlineOutlinedIcon />
@@ -362,14 +385,20 @@ const LayoutAdmin = () => {
                       minHeight: 48,
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
+                      color: "text.icon"
+
                     }}
-                    onClick={() => navigate("/admin/book")}
+                    onClick={() => { navigate("/admin/book"); setSelectedIndex(2) }}
+                    selected={selectedIndex === 2}
+
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
+                        color: "text.icon"
+
                       }}
                     >
                       <LibraryBooksOutlinedIcon />
@@ -383,14 +412,21 @@ const LayoutAdmin = () => {
                       minHeight: 48,
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
+                      color: "text.icon"
+
                     }}
+                    onClick={() => { navigate("/admin/book"); setSelectedIndex(3) }}
+                    selected={selectedIndex === 3}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
+                        color: "text.icon"
+
                       }}
+
                     >
                       <PaidOutlinedIcon />
                     </ListItemIcon>

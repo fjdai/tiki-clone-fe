@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -7,12 +7,10 @@ import TextField from '@mui/material/TextField';
 import { Divider } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import { NumericFormat } from 'react-number-format';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { callBookCategory, callDeleteBookImg, callUpdateBook, callUploadBookImg } from '../../../services/apiAdmin/apiManageBooks';
+import { callUpdateBook, callUploadBookImg } from '../../../services/apiAdmin/apiManageBooks';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -20,36 +18,19 @@ import Clear from '@mui/icons-material/Clear';
 import { v4 as uuidv4 } from 'uuid';
 import FileUpdate from './FileUpdate';
 import MultiFileUpdate from './MultiFileUpdate';
+import { toast } from 'react-toastify';
 
 
 
 
 export default function ModalUpdateBook(props) {
-    const { open, setOpen, reload, setReload, data, setData } = props;
-    const [listCategory, setListCategory] = useState([]);
+    const { open, setOpen, data, setData, listCategory } = props;
     const [openModalPreview, setOpenModalPreview] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
 
     const [rawThumbnail, setRawThumbnail] = useState("");
     const [rawSlider, setRawSlider] = useState([]);
     const [dataSlider, setDataSlider] = useState([]);
-
-
-
-    const fetchCategory = async () => {
-        const res = await callBookCategory();
-        if (res && res.data) {
-            setListCategory(res.data);
-        }
-    }
-    const [toast, setToast] = useState({
-        open: false,
-        type: "success"
-    });
-
-    useEffect(() => {
-        fetchCategory();
-    }, [])
 
     const handleOnChange = (event) => {
         if (event.target.name === "price") {
@@ -86,12 +67,11 @@ export default function ModalUpdateBook(props) {
         })
 
         if (res && res.data) {
-            setToast({ open: true, type: "success" })
+            toast.success("Cập nhật sách thành công!")
             handleCancel();
         }
         else {
-            setToast({ open: true, type: "error", message: res.message[0] })
-
+            toast.error(res.message[0])
         }
     }
 
@@ -599,11 +579,6 @@ export default function ModalUpdateBook(props) {
                     </Box>
                 </Box >
             </Modal >
-            <Snackbar open={toast.open} autoHideDuration={2500} onClose={() => { setToast({ ...toast, open: false }) }} anchorOrigin={{ vertical: "top", horizontal: "center" }}  >
-                <Alert onClose={() => { setToast({ ...toast, open: false }) }} severity={toast.type} sx={{ width: '175%' }}>
-                    {toast.type === "error" ? <>{toast.message}</> : <>Update sách thành công!</>}
-                </Alert>
-            </Snackbar >
         </ >
     );
 }
