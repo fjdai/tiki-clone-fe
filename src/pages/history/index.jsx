@@ -8,7 +8,6 @@ import TableRow from '@mui/material/TableRow';
 import { useEffect, useState } from "react";
 import { callHistory } from "../../services/apiNormalUser/apiBook";
 import moment from "moment-timezone";
-import ReactJson from 'react-json-view'
 
 const HistoryPage = () => {
     const [historyOrder, setHistoryOder] = useState([]);
@@ -67,7 +66,7 @@ const HistoryPage = () => {
                                             <Alert severity="success" sx={{ width: 150 }}>Thành công</Alert>
                                         </TableCell>
                                         <TableCell >
-                                            <ReactJson collapsed={true} enableClipboard={false} displayObjectSize={false} displayDataTypes={false} name={"Chi tiết đơn hàng"} src={data.detail} />
+                                            ...
                                         </TableCell>
                                     </TableRow>
                                 )
