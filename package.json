@@ -14,14 +14,15 @@
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.14.18",
     "@mui/material": "5.14.18",
+    "@mui/x-data-grid": "6.18.2",
     "@reduxjs/toolkit": "1.9.3",
     "axios": "1.6.2",
     "lodash": "4.17.21",
     "moment-timezone": "0.5.43",
-    "react": "^17.0.0",
-    "react-dom": "18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-image-gallery": "1.2.11",
-    "react-json-view": "1.21.3",
+    "react-json-view": "^1.21.3",
     "react-number-format": "5.3.1",
     "react-redux": "8.0.5",
     "react-router-dom": "6.9.0",
@@ -31,14 +32,14 @@
     "xlsx": "0.18.5"
   },
   "devDependencies": {
-    "@types/react": "18.2.37",
-    "@types/react-dom": "18.2.15",
-    "@vitejs/plugin-react-swc": "3.5.0",
-    "eslint": "8.53.0",
-    "eslint-plugin-react": "7.33.2",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-react-refresh": "0.4.4",
-    "sass": "1.69.5",
-    "vite": "4.0.0"
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "sass": "^1.69.5",
+    "vite": "^5.0.0"
   }
 }
