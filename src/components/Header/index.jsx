@@ -90,7 +90,7 @@ const Header = () => {
     const user = useSelector(state => state.account.user);
     const role = user.role;
     const userName = user.fullName;
-    const avt = useSelector(state => state.account.user?.avatar);
+    const avt = useSelector(state => state.account.user.avatar);
     const carts = useSelector(state => state.order.carts);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -104,7 +104,7 @@ const Header = () => {
 
     const [showPasswordCurrent, setShowPasswordCurrent] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
-    const [avatar, setAvatar] = useState(null);
+    const [avatar, setAvatar] = useState("");
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
 
@@ -360,9 +360,9 @@ const Header = () => {
     }, [user]);
 
     const fetchInfo = () => {
+        setAvatar(avt);
         setName(user.fullName);
         setPhone(user.phone);
-        setAvatar(avt);
     }
 
     const handleNameUpdate = (e) => {
