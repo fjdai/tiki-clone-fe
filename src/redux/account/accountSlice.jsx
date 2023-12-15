@@ -38,11 +38,16 @@ export const accountSlide = createSlice({
                 "avatar": "",
                 "id": ""
             };
+        },
+        doUpdateInfoAction: (state, action) => {
+            state.user.fullName = action.payload.fullName;
+            state.user.phone = action.payload.phone;
+            state.user.avatar = action.payload.avatar;
         }
     },
 
 })
 
-export const { doLoginAction, doGetAccountAction, doLogoutAction } = accountSlide.actions
+export const { doLoginAction, doGetAccountAction, doLogoutAction, doUpdateInfoAction } = accountSlide.actions
 
 export default accountSlide.reducer

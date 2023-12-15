@@ -18,9 +18,9 @@ const handleRefreshToken = async () => {
 }
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-    // if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem("access_token")) {
-    //     config.headers.Authorization = "Bearer" + window.localStorage.getItem("access_token")
-    // }
+    if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem("access_token")) {
+        config.headers.Authorization = "Bearer " + window.localStorage.getItem("access_token")
+    }
     // Do something before request is sent
     return config;
 }, function (error) {
@@ -51,7 +51,7 @@ instance.interceptors.response.use(function (response) {
         && +error.response.status === 400
         && error.config.url === "/api/v1/auth/refresh") {
         if (window.location.pathname !== "/"
-            && !window.location.pathname.startsWith("/book")) {
+            && !window.location.pathname.startsWith("/book/")) {
             window.location.href = "/login";
         }
     }

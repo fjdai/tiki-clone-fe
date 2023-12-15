@@ -26,6 +26,7 @@ import { callBookCategory, callDeleteBook, callListBook } from "../../../service
 import ModalAddNewBook from "./ModalAddNewBook";
 import ModalUpdateBook from "./ModalUpdateBook";
 import { toast } from "react-toastify";
+import _ from "lodash"
 
 export default function BookTable(props) {
     const { currentPage, setCurrentPage,
@@ -95,8 +96,8 @@ export default function BookTable(props) {
     const handleReloadTable = () => {
         setOrder("asc");
         setOrderBy("mainText")
-        setRowsPerPage(0)
-        setCurrentPage(value);
+        setRowsPerPage(5)
+        setCurrentPage(0);
         setBook({
             mainText: "",
             author: "",
@@ -145,7 +146,7 @@ export default function BookTable(props) {
         }
     }
 
-
+    console.log(rows);
 
 
     return (
@@ -160,13 +161,15 @@ export default function BookTable(props) {
 
             />
 
-            <ModalUpdateBook
-                open={openModalUpdateBook}
-                setOpen={setOpenModalUpdateBook}
-                data={dataUpdate}
-                setData={setDataUpdate}
-                listCategory={listCategory}
-            />
+            {!_.isEmpty(dataUpdate) &&
+                <ModalUpdateBook
+                    open={openModalUpdateBook}
+                    setOpen={setOpenModalUpdateBook}
+                    data={dataUpdate}
+                    setData={setDataUpdate}
+                    listCategory={listCategory}
+                />
+            }
 
             <DetailBook book={currentBook} open={openDetailBook} setOpen={setOpenDetailBook} />
 
@@ -280,6 +283,17 @@ export default function BookTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                            {_.isEmpty(rows) ?
+                                <TableRow sx={{ height: 200 }}>
+                                    <TableCell colSpan={6} align="center" >
+                                        <Typography variant="h5">
+                                            No records found
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                                :
+                                <></>
+                            }
                             {rows.map((row, index) => {
                                 return (
                                     <TableRow

@@ -25,9 +25,23 @@ export const orderSlice = createSlice({
             }
             state.carts = carts;
             toast.success("Sản phẩm đã được thêm vào Giỏ hàng");
+        },
+        doUpdateCartAction: (state, action) => {
+            let carts = state.carts;
+            const item = action.payload;
+            let index = carts.findIndex(e => e._id === item._id);
+            carts[index].quantity = item.quantity;
+            state.carts = carts;
+        },
+        doDeleteCartAction: (state, action) => {
+            let carts = state.carts.filter(e => e._id != action.payload._id)
+            state.carts = carts;
+        },
+        doPlaceOrderAction: (state) => {
+            state.carts = [];
         }
     },
 })
 
-export const { doAddBookAction } = orderSlice.actions;
+export const { doAddBookAction, doUpdateCartAction, doDeleteCartAction, doPlaceOrderAction } = orderSlice.actions;
 export default orderSlice.reducer;

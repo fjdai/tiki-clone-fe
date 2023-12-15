@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { doGetAccountAction } from "./redux/account/accountSlice.jsx";
 import NotFound from "./components/NotFound/index.jsx";
 import Loading from "./components/Loading/index.jsx";
-import ContactPage from "./pages/contact/index.jsx";
+import OrderPage from "./pages/order/index.jsx";
 import BookPage from "./pages/book/index.jsx";
 import AdminPage from "./pages/admin/index.jsx";
 import ProtectedRoute from "./components/ProtectedRoute/index.jsx";
@@ -22,6 +22,8 @@ import LayoutAdmin from "./components/Admin/LayoutAdmin.jsx";
 import Box from "@mui/material/Box";
 import ManageUsers from "./pages/admin/manageUsers/index.jsx";
 import ManageBooks from "./pages/admin/manageBooks/index.jsx";
+import HistoryPage from "./pages/history/index.jsx";
+import ManageOrders from "./pages/admin/manageOrders/index.jsx";
 
 const Layout = () => {
   return (
@@ -70,13 +72,17 @@ export default function App() {
           element: <Home />,
         },
         {
-          path: "contact",
-          element: <ContactPage />,
+          path: "order",
+          element: <OrderPage />,
         },
         {
           path: "book/:slug",
           element: <BookPage />,
         },
+        {
+          path: "history",
+          element: <HistoryPage />
+        }
       ],
     },
 
@@ -105,6 +111,14 @@ export default function App() {
           element:
             <ProtectedRoute>
               <ManageBooks />
+            </ProtectedRoute>
+          ,
+        },
+        {
+          path: "order",
+          element:
+            <ProtectedRoute>
+              <ManageOrders />
             </ProtectedRoute>
           ,
         },

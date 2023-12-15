@@ -16,40 +16,19 @@ const mode = (mode) => ({
     ...(mode === 'light'
       ? {
         primary: {
-          main: '#36261a',
-          light: '#36261a',
-          dark: '#36261a',
-          contrastText: '#36261a'
+          main: '#36261a'
         },
         secondary: {
-          main: '#36261a',
-          light: '#36261a',
-          dark: '#36261a',
-          contrastText: '#36261a'
+          main: '#57121e'
         },
         text: {
           primary: '#36261a',
           secondary: '#57121e',
-          disable: '#36261a',
-          icon: '#36261a'
         },
-        divider: '#36261a',
         background: {
           default: '#fff',
           paper: "#f8f8f8"
         },
-        action: {
-          active: '#36261a',
-          hover: '#36261a',
-          hoverOpacity: 0.5,
-          selected: '#36261a',
-          selectedOpacity: 0.5,
-          disable: '#36261a',
-          disableOpacity: 0.5,
-          focus: '#36261a',
-          focusOpacity: 0.5,
-          activatedOpacity: 0.5
-        }
       }
       :
       {
@@ -88,7 +67,7 @@ const mode = (mode) => ({
           selectedOpacity: 0.5,
           disable: '#fff',
           disableOpacity: 0.5,
-          focus: '#fff',
+          focus: 'rgba(0, 0, 0, 0.5)',
           focusOpacity: 0.5,
           activatedOpacity: 0.5
         },
@@ -98,7 +77,7 @@ const mode = (mode) => ({
 
 
 
-const theme = createTheme(mode('dark'));
+const theme = createTheme(mode('light'));
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -107,7 +86,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <App />
-          <ToastContainer autoClose={2000} />
+          <ToastContainer autoClose={2500} />
         </ThemeProvider>
       </PersistGate>
     </Provider>

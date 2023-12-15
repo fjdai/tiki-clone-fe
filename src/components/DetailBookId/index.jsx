@@ -3,7 +3,7 @@ import ImageGallery from "react-image-gallery";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./detailBook.scss";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -17,7 +17,8 @@ import { useDispatch } from "react-redux";
 import { doAddBookAction } from "../../redux/order/orderSlice";
 import Modal from '@mui/material/Modal';
 import { IconButton } from "@mui/material";
-import { Clear } from "@mui/icons-material";
+import Clear from "@mui/icons-material/Clear";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 
 
@@ -29,6 +30,7 @@ const formatPrice = (price) => {
 const DetailBook = (props) => {
     const { book, images } = props;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [order, setOrder] = useState(1);
     const [modalGallery, setModalGallery] = useState(false);
@@ -52,6 +54,7 @@ const DetailBook = (props) => {
     const handleOrderBook = () => {
         dispatch(doAddBookAction({ quantity: order, _id: book._id, detail: { ...book } }))
     }
+
     const handleOnCloseModal = () => {
         setModalGallery(false)
     }
@@ -111,6 +114,11 @@ const DetailBook = (props) => {
                     height: "auto",
                     flexDirection: { xs: "column", md: "row" }
                 }} elevation={5} component={Paper}>
+                <Box sx={{ display: { xs: "block", md: "none" }, position: "absolute", left: 15, top: 100 }}>
+                    <IconButton onClick={() => navigate("/")}>
+                        <ArrowBackIosIcon />
+                    </IconButton>
+                </Box>
                 <Box className="left-content" sx={{ width: "40%", display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
                     <ImageGallery
                         items={images}
@@ -132,6 +140,7 @@ const DetailBook = (props) => {
                         originalHeight={"50px"}
                         showThumbnails={false}
                         infinite={true}
+                        showIndex={true}
                     />
                 </Box>
                 <Box className="right-content" sx={{ width: { xs: "100%", md: "60%" }, p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
@@ -173,7 +182,7 @@ const DetailBook = (props) => {
                             </div>
                             <div>Thêm vào giỏ hàng</div>
                         </button>
-                        <button className="buy-btn">Mua ngay</button>
+                        <button className="buy-btn" onClick={(event) => { handleOrderBook(event); navigate("/order") }}>Mua ngay</button>
                     </div>
                 </Box >
             </Box >

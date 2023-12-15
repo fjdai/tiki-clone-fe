@@ -185,6 +185,7 @@ const Home = () => {
                     },
                     display: { xs: "block", md: "none" }
                 }}
+                onClose={() => { setOpenFilter(false) }}
                 anchor={'right'}
                 open={openFilter}
             >
@@ -197,8 +198,7 @@ const Home = () => {
 
                     <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <FilterAltOutlinedIcon />
-                            <Typography variant="body1">Bộ lọc tìm kiếm</Typography>
+                            <Typography variant="h6">Bộ lọc tìm kiếm</Typography>
                         </Box>
                         <IconButton sx={{ color: "text.secondary" }} onClick={handleOnCleatFilter}>
                             <ReplayOutlinedIcon />
@@ -327,7 +327,7 @@ const Home = () => {
                             height: "auto",
                             width: "20%",
                             minWidth: "230px",
-                            backgroundColor: "rgb(0,0,0,0.2)",
+                            backgroundColor: "rgb(0,0,0,0.04)",
                             boxShadow: 3,
                             p: 3,
                             display: { xs: "none", sm: "none", md: "block" }
@@ -421,7 +421,7 @@ const Home = () => {
                             height: "auto",
                             width: { xs: "100%", md: "69%", lg: "76%" },
                             boxShadow: { xs: "0", md: "3" },
-                            backgroundColor: { xs: "background.default", md: "rgb(0,0,0,0.2)" },
+                            backgroundColor: { xs: "background.default", md: "rgb(0,0,0,0.04)" },
 
                             display: "flex",
                             flexDirection: "column",

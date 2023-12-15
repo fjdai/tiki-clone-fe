@@ -415,7 +415,7 @@ const LayoutAdmin = () => {
                       color: "text.icon"
 
                     }}
-                    onClick={() => { navigate("/admin/book"); setSelectedIndex(3) }}
+                    onClick={() => { navigate("/admin/order"); setSelectedIndex(3) }}
                     selected={selectedIndex === 3}
                   >
                     <ListItemIcon
@@ -424,7 +424,6 @@ const LayoutAdmin = () => {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                         color: "text.icon"
-
                       }}
 
                     >
