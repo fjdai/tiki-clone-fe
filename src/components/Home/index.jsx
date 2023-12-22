@@ -24,6 +24,7 @@ import Tab from '@mui/material/Tab';
 import { Drawer } from "@mui/material";
 import { Clear } from "@mui/icons-material";
 import "./home.scss";
+import SkeletonHomePage from "../skeleton/homepage";
 
 const Home = () => {
     const [rate, setRate] = useState(2.5);
@@ -444,66 +445,76 @@ const Home = () => {
                             </IconButton>
                             <Typography variant="body1">Lọc</Typography>
                         </Box>
-                        <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 1 }} >
-                            {
-                                listBook?.map((book, index) => {
-                                    return (
-                                        <Box key={`book-${index}`}
-                                            onClick={() => handleRedirectBook(book)}
-                                            sx={{
-                                                display: "flex",
-                                                cursor: "pointer",
-                                                flexWrap: "wrap",
-                                                flexDirection: "column",
-                                                width: { xs: 175, sm: 180, md: 200 },
-                                                minHeight: 350,
+                        {listBook.length > 0
+                            ?
+                            <>
+                                <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 1 }} >
+                                    {
+                                        listBook.map((book, index) => {
+                                            return (
+                                                <Box key={`book-${index}`}
+                                                    onClick={() => handleRedirectBook(book)}
+                                                    sx={{
+                                                        display: "flex",
+                                                        cursor: "pointer",
+                                                        flexWrap: "wrap",
+                                                        flexDirection: "column",
+                                                        width: { xs: 175, sm: 180, md: 200 },
+                                                        minHeight: 350,
 
-                                                boxShadow: 1,
-                                                "&:hover": { boxShadow: { xs: 1, md: 5 } },
-                                                backgroundColor: "background.paper",
-                                                justifyContent: "space-between"
-                                            }}>
-                                            <Box sx={{ display: "flex", flexDirection: "column" }}>
-                                                <Box sx={{
-                                                    width: "100%",
-                                                    minHeight: 210,
-                                                }} component="img" src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${book.thumbnail}`}></Box>
-                                                <Typography sx={{
-                                                    m: 1,
-                                                    display: '-webkit-box',
-                                                    overflow: 'hidden',
-                                                    WebkitBoxOrient: 'vertical',
-                                                    WebkitLineClamp: 3,
-                                                }} variant="body2">{book.mainText}</Typography>
-                                            </Box>
-                                            <Box sx={{ m: 1, display: "flex", flexDirection: { xs: "row", md: "column" }, gap: 1 }}>
-                                                <Typography variant="body2">
-                                                    {formatPrice(book.price)}
-                                                </Typography>
-                                                <Box sx={{ display: "flex", gap: 1, }}>
-                                                    <Rating
-                                                        value={5}
-                                                        size="small"
-                                                        sx={{
-                                                            display: { xs: "none", md: "flex" }
-                                                        }}
-                                                    />
-                                                    <Typography variant="body2">{`Đã bán ${book.sold}`}</Typography>
+                                                        boxShadow: 1,
+                                                        "&:hover": { boxShadow: { xs: 1, md: 5 } },
+                                                        backgroundColor: "background.paper",
+                                                        justifyContent: "space-between"
+                                                    }}>
+                                                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                                        <Box sx={{
+                                                            width: "100%",
+                                                            minHeight: 210,
+                                                        }} component="img" src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${book.thumbnail}`}></Box>
+                                                        <Typography sx={{
+                                                            m: 1,
+                                                            display: '-webkit-box',
+                                                            overflow: 'hidden',
+                                                            WebkitBoxOrient: 'vertical',
+                                                            WebkitLineClamp: 3,
+                                                        }} variant="body2">{book.mainText}</Typography>
+                                                    </Box>
+                                                    <Box sx={{ m: 1, display: "flex", flexDirection: { xs: "row", md: "column" }, gap: 1 }}>
+                                                        <Typography variant="body2">
+                                                            {formatPrice(book.price)}
+                                                        </Typography>
+                                                        <Box sx={{ display: "flex", gap: 1, }}>
+                                                            <Rating
+                                                                value={5}
+                                                                size="small"
+                                                                sx={{
+                                                                    display: { xs: "none", md: "flex" }
+                                                                }}
+                                                            />
+                                                            <Typography variant="body2">{`Đã bán ${book.sold}`}</Typography>
+                                                        </Box>
+                                                    </Box>
                                                 </Box>
-                                            </Box>
-                                        </Box>
-                                    )
-                                })
-                            }
-                        </Box>
-                        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                            <Pagination
-                                count={totalPages}
-                                page={currentPage}
-                                onChange={(e, value) => handleChangeCurrentPage(e, value)}
-                                color="primary" shape="rounded"
-                            />
-                        </Box>
+                                            )
+                                        })
+                                    }
+                                </Box>
+                                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                                    <Pagination
+                                        count={totalPages}
+                                        page={currentPage}
+                                        onChange={(e, value) => handleChangeCurrentPage(e, value)}
+                                        color="primary" shape="rounded"
+                                    />
+                                </Box>
+                            </>
+                            :
+                            <>
+                                <SkeletonHomePage />
+                            </>
+
+                        }
 
                     </Box>
                 </Box>

@@ -19,6 +19,8 @@ import Modal from '@mui/material/Modal';
 import { IconButton } from "@mui/material";
 import Clear from "@mui/icons-material/Clear";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import SkeletonDetailBook from "../skeleton/detailbook";
+import _ from "lodash";
 
 
 
@@ -104,88 +106,95 @@ const DetailBook = (props) => {
                     </NavLink>
                 </Breadcrumbs>
             </Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    mx: { xs: 0, md: 5 },
-                    mt: 2,
-                    mb: 5,
-                    p: 5,
-                    height: "auto",
-                    flexDirection: { xs: "column", md: "row" }
-                }} elevation={5} component={Paper}>
-                <Box sx={{ display: { xs: "block", md: "none" }, position: "absolute", left: 15, top: 100 }}>
-                    <IconButton onClick={() => navigate("/")}>
-                        <ArrowBackIosIcon />
-                    </IconButton>
-                </Box>
-                <Box className="left-content" sx={{ width: "40%", display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
-                    <ImageGallery
-                        items={images}
-                        onClick={() => setModalGallery(true)}
-                        showFullscreenButton={false}
-                        showPlayButton={false}
-                        showNav={false}
-                        originalHeight={"50px"}
-                        showThumbnails={true}
-                        infinite={true}
-                    />
-                </Box>
-                <Box className="left-content" sx={{ width: "100%", display: { xs: "flex", md: "none" }, justifyContent: "center" }}>
-                    <ImageGallery
-                        items={images}
-                        showFullscreenButton={false}
-                        showPlayButton={false}
-                        showNav={false}
-                        originalHeight={"50px"}
-                        showThumbnails={false}
-                        infinite={true}
-                        showIndex={true}
-                    />
-                </Box>
-                <Box className="right-content" sx={{ width: { xs: "100%", md: "60%" }, p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
-                    <Typography variant="body1">Tác giả: <NavLink style={{ color: "#0047ab", textDecoration: "none" }}>{`${book.author}`}</NavLink></Typography>
-                    <Typography variant="h4">{`${book.mainText}`}</Typography>
-                    <Box sx={{ display: "flex", gap: 2 }}>
-                        <Rating
-                            value={5}
-                            readOnly
-                            size="small"
-                        />
-                        <Divider orientation="vertical" />
-                        <Typography variant="body2">{`Đã bán ${book.sold}`}</Typography>
+
+            {!_.isEmpty(book)
+                ?
+                <Box
+                    sx={{
+                        display: "flex",
+                        mx: { xs: 0, md: 5 },
+                        mt: 2,
+                        mb: 5,
+                        p: 5,
+                        height: "auto",
+                        flexDirection: { xs: "column", md: "row" }
+                    }} elevation={5} component={Paper}>
+                    <Box sx={{ display: { xs: "block", md: "none" }, position: "absolute", left: 15, top: 100 }}>
+                        <IconButton onClick={() => navigate("/")}>
+                            <ArrowBackIosIcon />
+                        </IconButton>
                     </Box>
-                    <div className="price-container">
-                        <div className="book-price">{formatPrice(book.price)}</div>
-                    </div>
-                    <div className="transport-container">
-                        <div className="transport-title">Vận chuyển</div>
-                        <div className="transport-content">Miễn phí vận chuyển</div>
-                    </div>
-                    <div className="quantity-container">
-                        <div className="quantity-title">Số lượng</div>
-                        <div className="quantity-content">
-                            <button className="button" onClick={(e) => handleOnChangeQuantity(e, "subtract")}>
-                                <RemoveOutlinedIcon fontSize="50" />
-                            </button>
-                            <input className="quantity-input" value={order} onClick={select} onChange={(e) => handleOnChangeQuantity(e, "input")} />
-                            <button className="button" onClick={(e) => { handleOnChangeQuantity(e, "add") }}>
-                                <AddOutlinedIcon fontSize="50" />
-                            </button>
+                    <Box className="left-content" sx={{ width: "40%", display: { xs: "none", md: "flex" }, justifyContent: "center" }}>
+                        <ImageGallery
+                            items={images}
+                            onClick={() => setModalGallery(true)}
+                            showFullscreenButton={false}
+                            showPlayButton={false}
+                            showNav={false}
+                            originalHeight={"50px"}
+                            showThumbnails={true}
+                            infinite={true}
+                        />
+                    </Box>
+                    <Box className="left-content" sx={{ width: "100%", display: { xs: "flex", md: "none" }, justifyContent: "center" }}>
+                        <ImageGallery
+                            items={images}
+                            showFullscreenButton={false}
+                            showPlayButton={false}
+                            showNav={false}
+                            originalHeight={"50px"}
+                            showThumbnails={false}
+                            infinite={true}
+                            showIndex={true}
+                        />
+                    </Box>
+                    <Box className="right-content" sx={{ width: { xs: "100%", md: "60%" }, p: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+                        <Typography variant="body1">Tác giả: <NavLink style={{ color: "#0047ab", textDecoration: "none" }}>{`${book.author}`}</NavLink></Typography>
+                        <Typography variant="h4">{`${book.mainText}`}</Typography>
+                        <Box sx={{ display: "flex", gap: 2 }}>
+                            <Rating
+                                value={5}
+                                readOnly
+                                size="small"
+                            />
+                            <Divider orientation="vertical" />
+                            <Typography variant="body2">{`Đã bán ${book.sold}`}</Typography>
+                        </Box>
+                        <div className="price-container">
+                            <div className="book-price">{formatPrice(book.price)}</div>
                         </div>
-                        <div className="quantity-subtitle">{`${book.quantity} sản phẩm sẵn có`}</div>
-                    </div>
-                    <div className="order-container">
-                        <button onClick={handleOrderBook} className="add-order-btn">
-                            <div style={{ marginRight: "10px" }}>
-                                <AddShoppingCartOutlinedIcon fontSize="small" />
+                        <div className="transport-container">
+                            <div className="transport-title">Vận chuyển</div>
+                            <div className="transport-content">Miễn phí vận chuyển</div>
+                        </div>
+                        <div className="quantity-container">
+                            <div className="quantity-title">Số lượng</div>
+                            <div className="quantity-content">
+                                <button className="button" onClick={(e) => handleOnChangeQuantity(e, "subtract")}>
+                                    <RemoveOutlinedIcon fontSize="50" />
+                                </button>
+                                <input className="quantity-input" value={order} onClick={select} onChange={(e) => handleOnChangeQuantity(e, "input")} />
+                                <button className="button" onClick={(e) => { handleOnChangeQuantity(e, "add") }}>
+                                    <AddOutlinedIcon fontSize="50" />
+                                </button>
                             </div>
-                            <div>Thêm vào giỏ hàng</div>
-                        </button>
-                        <button className="buy-btn" onClick={(event) => { handleOrderBook(event); navigate("/order") }}>Mua ngay</button>
-                    </div>
+                            <div className="quantity-subtitle">{`${book.quantity} sản phẩm sẵn có`}</div>
+                        </div>
+                        <div className="order-container">
+                            <button onClick={handleOrderBook} className="add-order-btn">
+                                <div style={{ marginRight: "10px" }}>
+                                    <AddShoppingCartOutlinedIcon fontSize="small" />
+                                </div>
+                                <div>Thêm vào giỏ hàng</div>
+                            </button>
+                            <button className="buy-btn" onClick={(event) => { handleOrderBook(event); navigate("/order") }}>Mua ngay</button>
+                        </div>
+                    </Box >
                 </Box >
-            </Box >
+                :
+                <SkeletonDetailBook />
+            }
+
         </>
     )
 }
